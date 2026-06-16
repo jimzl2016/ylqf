@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>意见管理 - 艺旅清风智慧监督系统</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div id="app" class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">艺</div>
+        <div class="sidebar-title"><h1>艺旅清风</h1><p>智慧监督系统</p></div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-th-large icon"></i><span>廉政概览</span></a></li>
+          <li class="nav-item">
+            <a href="#" class="nav-link active" data-submenu="archive">
+              <i class="fas fa-file-alt icon"></i><span>档案管理</span><i class="fas fa-chevron-right nav-arrow open"></i>
+            </a>
+            <ul class="nav-submenu open">
+              <li><a href="archive-list.html" class="nav-link">档案列表</a></li>
+              <li><a href="archive-create.html" class="nav-link">档案录入</a></li>
+              <li><a href="archive-opinion.html" class="nav-link active">意见管理</a></li>
+              <li><a href="archive-recycle.html" class="nav-link">垃圾回收</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-robot icon"></i><span>AI廉政分析</span></a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-folder-open icon"></i><span>案件管理</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-avatar">管</div>
+        <div class="user-info"><p class="name">管理员</p><p class="dept">纪委办公室</p></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-title"><h2>湖北艺术职业学院智慧监督系统</h2></div>
+        <div class="header-tools">
+          <button class="header-btn"><i class="fas fa-bell"></i></button>
+          <button class="header-btn"><i class="fas fa-user"></i></button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>档案意见管理</h1>
+            <p>意见申请 · 审批 · 回复</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-primary btn-sm" onclick="showToast('将打开意见申请表单');showModal('applyModal');">
+              <i class="fas fa-plus"></i> 新建意见申请
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab切换 -->
+        <div class="tabs" style="margin-bottom:24px;">
+          <button class="tab active" onclick="switchOpinionTab(this,'pending')">待我审批 <span class="badge badge-danger" style="margin-left:6px;">3</span></button>
+          <button class="tab" onclick="switchOpinionTab(this,'applied')">我的申请</button>
+          <button class="tab" onclick="switchOpinionTab(this,'replied')">已回复</button>
+          <button class="tab" onclick="switchOpinionTab(this,'history')">历史归档</button>
+        </div>
+
+        <!-- 待审批列表 -->
+        <div id="opinion-pending" class="opinion-list">
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--warning);">
+            <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div style="flex:1;">
+                <div class="flex items-center gap-2" style="margin-bottom:8px;">
+                  <span class="badge badge-warning">待审批</span>
+                  <span style="font-weight:500;font-size:15px;">关于张三廉政档案信息补充的意见申请</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);">
+                  <span><i class="fas fa-user"></i> 李四（纪检干事）</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span><i class="fas fa-clock"></i> 2024-06-15 14:30</span>
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">建议补充张三2023年度个人述职报告和民主测评结果，以便全面评估其廉政表现...</p>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0;">
+                <button class="btn btn-sm" onclick="showModal('replyModal')"><i class="fas fa-reply"></i> 回复</button>
+                <button class="btn btn-sm" style="background:var(--success);color:#fff;" onclick="showToast('已审批通过')"><i class="fas fa-check"></i> 通过</button>
+                <button class="btn btn-sm" style="background:var(--danger);color:#fff;" onclick="showToast('已驳回申请')"><i class="fas fa-times"></i> 驳回</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--warning);">
+            <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div style="flex:1;">
+                <div class="flex items-center gap-2" style="margin-bottom:8px;">
+                  <span class="badge badge-warning">待审批</span>
+                  <span style="font-weight:500;font-size:15px;">关于王五谈话函询情况的补充意见</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);">
+                  <span><i class="fas fa-user"></i> 赵六（纪检干事）</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span><i class="fas fa-clock"></i> 2024-06-14 10:15</span>
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">王五在谈话函询中对部分问题解释不够充分，建议进一步核实其在外兼职情况...</p>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0;">
+                <button class="btn btn-sm" onclick="showModal('replyModal')"><i class="fas fa-reply"></i> 回复</button>
+                <button class="btn btn-sm" style="background:var(--success);color:#fff;" onclick="showToast('已审批通过')"><i class="fas fa-check"></i> 通过</button>
+                <button class="btn btn-sm" style="background:var(--danger);color:#fff;" onclick="showToast('已驳回申请')"><i class="fas fa-times"></i> 驳回</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--warning);">
+            <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div style="flex:1;">
+                <div class="flex items-center gap-2" style="margin-bottom:8px;">
+                  <span class="badge badge-warning">待审批</span>
+                  <span style="font-weight:500;font-size:15px;">关于科研处廉政风险点的排查意见</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);">
+                  <span><i class="fas fa-user"></i> 钱七（纪检干事）</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span><i class="fas fa-clock"></i> 2024-06-13 16:40</span>
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">科研处近期科研项目经费使用存在若干疑点，建议启动专项核查程序...</p>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0;">
+                <button class="btn btn-sm" onclick="showModal('replyModal')"><i class="fas fa-reply"></i> 回复</button>
+                <button class="btn btn-sm" style="background:var(--success);color:#fff;" onclick="showToast('已审批通过')"><i class="fas fa-check"></i> 通过</button>
+                <button class="btn btn-sm" style="background:var(--danger);color:#fff;" onclick="showToast('已驳回申请')"><i class="fas fa-times"></i> 驳回</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 我的申请列表 (默认隐藏) -->
+        <div id="opinion-applied" class="opinion-list" style="display:none;">
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--primary);">
+            <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div style="flex:1;">
+                <div class="flex items-center gap-2" style="margin-bottom:8px;">
+                  <span class="badge badge-primary">审批中</span>
+                  <span style="font-weight:500;font-size:15px;">关于补充财务处廉政档案材料的申请</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);">
+                  <span><i class="fas fa-user"></i> 管理员（纪委办）</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span><i class="fas fa-clock"></i> 2024-06-12 09:20</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span>当前处理人：<span style="color:var(--primary);">纪委副书记</span></span>
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">财务处2024年上半年廉政档案材料已收集完毕，请审批后归档...</p>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0;">
+                <span class="badge badge-primary"><i class="fas fa-clock"></i> 等待中</span>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--success);">
+            <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+              <div style="flex:1;">
+                <div class="flex items-center gap-2" style="margin-bottom:8px;">
+                  <span class="badge badge-success">已通过</span>
+                  <span style="font-weight:500;font-size:15px;">关于调整后勤处高风险岗位的监督意见</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-secondary);">
+                  <span><i class="fas fa-user"></i> 管理员（纪委办）</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span><i class="fas fa-clock"></i> 2024-06-10 14:00</span>
+                  <span style="margin:0 12px;">|</span>
+                  <span>已由 <span style="color:var(--primary);">纪委副书记</span> 审批通过</span>
+                </div>
+              </div>
+              <div class="flex gap-2" style="flex-shrink:0;">
+                <button class="btn btn-sm" onclick="showToast('查看审批详情')"><i class="fas fa-eye"></i> 查看</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 已回复列表 (默认隐藏) -->
+        <div id="opinion-replied" class="opinion-list" style="display:none;">
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--success);">
+            <div class="card-body">
+              <div class="flex items-center justify-between" style="margin-bottom:8px;">
+                <div class="flex items-center gap-2">
+                  <span class="badge badge-success">已回复</span>
+                  <span style="font-weight:500;font-size:15px;">关于教务处廉政教育工作计划的意见</span>
+                </div>
+                <span style="font-size:12px;color:var(--text-secondary);">2024-06-11</span>
+              </div>
+              <div style="background:var(--bg-secondary);padding:12px;border-radius:8px;margin-top:8px;">
+                <p style="font-size:13px;"><strong>回复内容：</strong>同意该计划，建议增加警示教育频次，每季度至少开展一次廉政专题学习。</p>
+                <p style="font-size:12px;color:var(--text-secondary);margin-top:4px;">—— 纪委副书记 于 2024-06-11 16:30 回复</p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:12px;border-left:3px solid var(--success);">
+            <div class="card-body">
+              <div class="flex items-center justify-between" style="margin-bottom:8px;">
+                <div class="flex items-center gap-2">
+                  <span class="badge badge-success">已回复</span>
+                  <span style="font-weight:500;font-size:15px;">关于招生办廉洁风险防控的意见申请</span>
+                </div>
+                <span style="font-size:12px;color:var(--text-secondary);">2024-06-09</span>
+              </div>
+              <div style="background:var(--bg-secondary);padding:12px;border-radius:8px;margin-top:8px;">
+                <p style="font-size:13px;"><strong>回复内容：</strong>已阅，请招生办完善风险防控台账，并按要求定期报送纪委备案。</p>
+                <p style="font-size:12px;color:var(--text-secondary);margin-top:4px;">—— 纪委书记 于 2024-06-09 10:00 回复</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 历史归档 -->
+        <div id="opinion-history" class="opinion-list" style="display:none;">
+          <div style="text-align:center;padding:60px 20px;color:var(--text-secondary);">
+            <i class="fas fa-archive" style="font-size:48px;margin-bottom:16px;opacity:0.4;"></i>
+            <p>历史归档意见列表</p>
+            <p style="font-size:13px;margin-top:4px;">已完成归档的历年意见将在此展示</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== 弹窗 ===== -->
+
+  <!-- 新建意见申请弹窗 -->
+  <div class="modal-overlay" id="applyModal" style="display:none;" onclick="closeModalOutside(this)">
+    <div class="modal" style="max-width:580px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>新建意见申请</h3>
+        <button class="modal-close" onclick="closeModal('applyModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">申请标题 <span style="color:red;">*</span></label>
+          <input type="text" class="search-input" style="width:100%;" placeholder="请输入意见申请标题" />
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">关联档案</label>
+          <select class="search-input" style="width:100%;">
+            <option value="">请选择关联档案（可选）</option>
+            <option>张三 - 教务处</option>
+            <option>李四 - 财务处</option>
+            <option>王五 - 后勤处</option>
+            <option>赵六 - 学生处</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">审批人 <span style="color:red;">*</span></label>
+          <select class="search-input" style="width:100%;">
+            <option value="">请选择审批人</option>
+            <option>纪委副书记（刘某某）</option>
+            <option>纪委书记（张某某）</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">申请内容 <span style="color:red;">*</span></label>
+          <textarea class="search-input" style="width:100%;min-height:120px;resize:vertical;" placeholder="请详细描述意见申请的内容、理由和相关建议..."></textarea>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">附件</label>
+          <div class="upload-zone" style="padding:20px;" onclick="showToast('选择附件文件')">
+            <i class="fas fa-paperclip" style="font-size:24px;color:var(--primary);margin-bottom:8px;"></i>
+            <p style="font-size:13px;color:var(--text-secondary);">点击上传附件（支持 PDF、Word、图片格式）</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal('applyModal')">取消</button>
+        <button class="btn btn-primary" onclick="closeModal('applyModal');showToast('意见申请已提交，等待审批');"><i class="fas fa-paper-plane"></i> 提交申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 回复弹窗 -->
+  <div class="modal-overlay" id="replyModal" style="display:none;" onclick="closeModalOutside(this)">
+    <div class="modal" style="max-width:540px;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>回复意见</h3>
+        <button class="modal-close" onclick="closeModal('replyModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background:var(--bg-secondary);padding:12px;border-radius:8px;margin-bottom:16px;">
+          <p style="font-size:12px;color:var(--text-secondary);"><strong>原意见：</strong>建议补充张三2023年度个人述职报告和民主测评结果，以便全面评估其廉政表现。</p>
+          <p style="font-size:12px;color:var(--text-secondary);margin-top:4px;">—— 李四（纪检干事）2024-06-15</p>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">回复内容 <span style="color:red;">*</span></label>
+          <textarea class="search-input" style="width:100%;min-height:120px;resize:vertical;" placeholder="请输入回复内容..."></textarea>
+        </div>
+        <label class="checkbox-label" style="margin-bottom:8px;">
+          <input type="checkbox" /> <span>回复后发送通知提醒</span>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal('replyModal')">取消</button>
+        <button class="btn btn-primary" onclick="closeModal('replyModal');showToast('回复已发送');"><i class="fas fa-reply"></i> 发送回复</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

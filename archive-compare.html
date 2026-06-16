@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>信息对比 - 艺旅清风智慧监督系统</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div id="app" class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">艺</div>
+        <div class="sidebar-title"><h1>艺旅清风</h1><p>智慧监督系统</p></div>
+      </div>
+      <nav class="sidebar-nav">
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-th-large icon"></i><span>廉政概览</span></a></li>
+          <li class="nav-item">
+            <a href="#" class="nav-link active"><i class="fas fa-file-alt icon"></i><span>档案管理</span><i class="fas fa-chevron-down nav-arrow"></i></a>
+            <ul class="nav-submenu open">
+              <li><a href="archive-list.html" class="nav-link">档案列表</a></li>
+              <li><a href="archive-create.html" class="nav-link active">档案录入</a></li>
+              <li><a href="archive-opinion.html" class="nav-link">意见管理</a></li>
+              <li><a href="archive-recycle.html" class="nav-link">垃圾回收</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-robot icon"></i><span>AI廉政分析</span></a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-folder-open icon"></i><span>案件管理</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-avatar">管</div>
+        <div class="user-info"><p class="name">管理员</p><p class="dept">纪委办公室</p></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="main-header">
+        <div class="header-title"><h2>湖北艺术职业学院智慧监督系统</h2></div>
+        <div class="header-tools">
+          <button class="header-btn"><i class="fas fa-bell"></i></button>
+          <button class="header-btn"><i class="fas fa-user"></i></button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <div class="page-title">
+            <h1>档案信息对比</h1>
+            <p>版本差异 · 变更追溯</p>
+          </div>
+          <div>
+            <button class="btn btn-sm" onclick="showToast('对比结果导出成功')"><i class="fas fa-download"></i> 导出对比报告</button>
+          </div>
+        </div>
+
+        <!-- 选择对比对象 -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header"><h3 class="card-title"><i class="fas fa-balance-scale"></i> 选择对比对象</h3></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:end;">
+              <div>
+                <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">源档案（旧版本）</label>
+                <select class="search-input" style="width:100%;">
+                  <option>张三 - 教务处 (V2 2024-06-10)</option>
+                  <option>张三 - 教务处 (V1 2024-03-05)</option>
+                  <option>李四 - 财务处 (V3 2024-06-01)</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" style="padding:8px 20px;margin-bottom:0;" onclick="showToast('开始对比分析')">
+                <i class="fas fa-exchange-alt"></i> 对比
+              </button>
+              <div>
+                <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">目标档案（新版本）</label>
+                <select class="search-input" style="width:100%;">
+                  <option selected>张三 - 教务处 (V3 2024-06-15)</option>
+                  <option>张三 - 教务处 (V2 2024-06-10)</option>
+                  <option>李四 - 财务处 (V3 2024-06-01)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 对比结果 -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-list"></i> 差异对比结果</h3>
+            <span style="font-size:13px;color:var(--text-secondary);">共发现 <span style="color:var(--warning);font-weight:600;">5</span> 处差异</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="compare-item">
+              <div class="compare-label"><span class="badge badge-warning">字段变更</span> 政治面貌</div>
+              <div class="compare-columns">
+                <div class="compare-old"><i class="fas fa-times-circle" style="color:var(--danger);margin-right:4px;"></i> 中共党员</div>
+                <div class="compare-new"><i class="fas fa-check-circle" style="color:var(--success);margin-right:4px;"></i> 中共预备党员</div>
+              </div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-label"><span class="badge badge-warning">字段变更</span> 职务</div>
+              <div class="compare-columns">
+                <div class="compare-old"><i class="fas fa-times-circle" style="color:var(--danger);margin-right:4px;"></i> 教务处副处长（副处级）</div>
+                <div class="compare-new"><i class="fas fa-check-circle" style="color:var(--success);margin-right:4px;"></i> 教务处处长（正处级）</div>
+              </div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-label"><span class="badge badge-info">新增</span> 年度考核结果</div>
+              <div class="compare-columns">
+                <div class="compare-old"><i class="fas fa-minus-circle" style="color:var(--text-secondary);margin-right:4px;"></i> （无数据）</div>
+                <div class="compare-new"><i class="fas fa-plus-circle" style="color:var(--success);margin-right:4px;"></i> 2023年度：优秀</div>
+              </div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-label"><span class="badge badge-info">新增</span> 廉政教育情况</div>
+              <div class="compare-columns">
+                <div class="compare-old"><i class="fas fa-minus-circle" style="color:var(--text-secondary);margin-right:4px;"></i> （无数据）</div>
+                <div class="compare-new"><i class="fas fa-plus-circle" style="color:var(--success);margin-right:4px;"></i> 参加廉政教育4次</div>
+              </div>
+            </div>
+            <div class="compare-item">
+              <div class="compare-label"><span class="badge badge-warning">字段变更</span> 家庭情况</div>
+              <div class="compare-columns">
+                <div class="compare-old"><i class="fas fa-times-circle" style="color:var(--danger);margin-right:4px;"></i> 配偶：王某某（企业职工）</div>
+                <div class="compare-new"><i class="fas fa-check-circle" style="color:var(--success);margin-right:4px;"></i> 配偶：王某某（退休）</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 时间线 -->
+        <div class="card" style="margin-top:20px;">
+          <div class="card-header"><h3 class="card-title"><i class="fas fa-history"></i> 版本历史（张三）</h3></div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-item active">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>V3 - 最新版本</h4>
+                  <p>2024-06-15 14:30 由 管理员 修改</p>
+                  <span class="badge badge-primary">当前对比版本</span>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>V2</h4>
+                  <p>2024-03-05 10:20 由 李四（纪检干事）修改</p>
+                  <span class="badge badge-outline">源版本</span>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <h4>V1 - 初始创建</h4>
+                  <p>2023-09-01 08:00 由 系统导入</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="/scripts/main.js"></script>
+</body>
+</html>
