@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+      <div class="p-6 space-y-6">
+
+        <!-- 页面标题 -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">处置台账</h1>
+            <p class="text-sm text-on-surface-variant mt-1">问题线索处置情况统计与管理</p>
+          </div>
+          <button id="btn-export" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium
+                         hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>导出 Excel
+          </button>
+        </div>
+
+        <!-- 统计卡片行 -->
+        <div class="grid grid-cols-4 gap-4">
+          <!-- 卡片-处置总量 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wide">处置总量</p>
+                <p class="text-3xl font-bold text-on-surface mt-1">1,286</p>
+                <p class="text-xs text-success mt-1.5 inline-flex items-center gap-1">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>较上期 +12.5%
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i>
+              </div>
+            </div>
+          </div>
+          <!-- 卡片-谈话函询 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wide">谈话函询</p>
+                <p class="text-3xl font-bold text-on-surface mt-1">456</p>
+                <p class="text-xs text-success mt-1.5 inline-flex items-center gap-1">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>较上期 +8.3%
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
+                <i data-lucide="message-circle" class="w-6 h-6 text-warning"></i>
+              </div>
+            </div>
+          </div>
+          <!-- 卡片-初步核实 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wide">初步核实</p>
+                <p class="text-3xl font-bold text-on-surface mt-1">523</p>
+                <p class="text-xs text-success mt-1.5 inline-flex items-center gap-1">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>较上期 +15.2%
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <i data-lucide="clipboard-check" class="w-6 h-6 text-primary"></i>
+              </div>
+            </div>
+          </div>
+          <!-- 卡片-立案审查 -->
+          <div class="bg-surface rounded-lg shadow-card p-5">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wide">立案审查</p>
+                <p class="text-3xl font-bold text-on-surface mt-1">307</p>
+                <p class="text-xs text-error mt-1.5 inline-flex items-center gap-1">
+                  <i data-lucide="trending-down" class="w-3 h-3"></i>较上期 -3.1%
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center">
+                <i data-lucide="gavel" class="w-6 h-6 text-error"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 筛选区域 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center gap-4 flex-wrap">
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-on-surface-variant whitespace-nowrap">时间范围</label>
+              <input id="filter-date-start" type="date" class="w-36 bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="2024-01-01" />
+              <span class="text-sm text-on-surface-variant">至</span>
+              <input id="filter-date-end" type="date" class="w-36 bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="2024-12-31" />
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-on-surface-variant whitespace-nowrap">处置类型</label>
+              <select id="filter-type" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option value="">全部类型</option>
+                <option value="talk">谈话函询</option>
+                <option value="verify">初步核实</option>
+                <option value="review">立案审查</option>
+                <option value="close">予以了结</option>
+                <option value="transfer">移送审理</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-on-surface-variant whitespace-nowrap">涉及单位</label>
+              <select id="filter-unit" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option value="">全部单位</option>
+                <option value="culture">市文化和旅游局</option>
+                <option value="radio">市广播电视局</option>
+                <option value="sports">市体育局</option>
+                <option value="tourism">市旅游发展集团</option>
+                <option value="art">市文化艺术中心</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-medium text-on-surface-variant whitespace-nowrap">状态</label>
+              <select id="filter-status" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option value="">全部状态</option>
+                <option value="pending">待处置</option>
+                <option value="processing">处置中</option>
+                <option value="done">已办结</option>
+                <option value="closed">已了结</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2 ml-auto">
+              <button id="btn-search" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium
+                             hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="search" class="w-3.5 h-3.5"></i>查询
+              </button>
+              <button id="btn-reset" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium
+                             hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>重置
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 台账列表表格 -->
+        <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+          <!-- 表头 -->
+          <div class="grid grid-cols-8 px-5 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+            <span>编号</span>
+            <span>处置事项</span>
+            <span>涉及人员</span>
+            <span>涉及单位</span>
+            <span>处置类型</span>
+            <span>处置时间</span>
+            <span>状态</span>
+            <span>操作</span>
+          </div>
+          <div class="divide-y divide-outline-variant/50">
+
+            <!-- 列表-处置记录1 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0001</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市文旅局张某违规接受管理服务对象宴请问题">反映市文旅局张某违规接受管理服务对象宴请问题</span>
+              <span class="text-sm text-on-surface">张*明</span>
+              <span class="text-sm text-on-surface-variant">市文化和旅游局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary w-fit">初步核实</span>
+              <span class="text-sm text-on-surface-variant">2024-03-15</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning w-fit">处置中</span>
+              <button id="btn-detail-1" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录2 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0002</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市广电局李某在工程项目招标中收受好处费">反映市广电局李某在工程项目招标中收受好处费</span>
+              <span class="text-sm text-on-surface">李*华</span>
+              <span class="text-sm text-on-surface-variant">市广播电视局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">立案审查</span>
+              <span class="text-sm text-on-surface-variant">2024-02-28</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error w-fit">处置中</span>
+              <button id="btn-detail-2" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录3 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0003</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市体育局王某利用职务便利为亲属谋取利益">反映市体育局王某利用职务便利为亲属谋取利益</span>
+              <span class="text-sm text-on-surface">王*强</span>
+              <span class="text-sm text-on-surface-variant">市体育局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning w-fit">谈话函询</span>
+              <span class="text-sm text-on-surface-variant">2024-04-10</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success w-fit">已办结</span>
+              <button id="btn-detail-3" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录4 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0004</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市旅游集团赵某公款旅游及违规报销问题">反映市旅游集团赵某公款旅游及违规报销问题</span>
+              <span class="text-sm text-on-surface">赵*峰</span>
+              <span class="text-sm text-on-surface-variant">市旅游发展集团</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary w-fit">初步核实</span>
+              <span class="text-sm text-on-surface-variant">2024-05-22</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning w-fit">处置中</span>
+              <button id="btn-detail-4" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录5 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0005</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市文化艺术中心陈某违规发放津补贴">反映市文化艺术中心陈某违规发放津补贴</span>
+              <span class="text-sm text-on-surface">陈*芳</span>
+              <span class="text-sm text-on-surface-variant">市文化艺术中心</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-surface-container-high text-on-surface-variant w-fit">予以了结</span>
+              <span class="text-sm text-on-surface-variant">2024-01-18</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-surface-container-high text-on-surface-variant w-fit">已了结</span>
+              <button id="btn-detail-5" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录6 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0006</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市文旅局刘某在文化项目审批中吃拿卡要">反映市文旅局刘某在文化项目审批中吃拿卡要</span>
+              <span class="text-sm text-on-surface">刘*伟</span>
+              <span class="text-sm text-on-surface-variant">市文化和旅游局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">立案审查</span>
+              <span class="text-sm text-on-surface-variant">2024-06-05</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error w-fit">处置中</span>
+              <button id="btn-detail-6" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录7 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0007</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市体育局黄某违规兼职取酬问题">反映市体育局黄某违规兼职取酬问题</span>
+              <span class="text-sm text-on-surface">黄*刚</span>
+              <span class="text-sm text-on-surface-variant">市体育局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning w-fit">谈话函询</span>
+              <span class="text-sm text-on-surface-variant">2024-07-12</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success w-fit">已办结</span>
+              <button id="btn-detail-7" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+            <!-- 列表-处置记录8 -->
+            <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+              <span class="text-sm font-medium text-on-surface">CZ-2024-0008</span>
+              <span class="text-sm text-on-surface truncate pr-2" title="反映市广电局周某违规操办婚丧喜庆事宜">反映市广电局周某违规操办婚丧喜庆事宜</span>
+              <span class="text-sm text-on-surface">周*敏</span>
+              <span class="text-sm text-on-surface-variant">市广播电视局</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary w-fit">初步核实</span>
+              <span class="text-sm text-on-surface-variant">2024-08-03</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning w-fit">处置中</span>
+              <button id="btn-detail-8" class="text-primary text-sm font-medium hover:underline w-fit cursor-pointer">查看详情</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-on-surface-variant">共 8 条记录，第 1/1 页</span>
+          <div class="flex items-center gap-1">
+            <button id="btn-prev" class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors disabled:opacity-40" disabled>
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <button class="w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium bg-primary text-on-primary">1</button>
+            <button id="btn-next" class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors disabled:opacity-40" disabled>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 详情弹窗 -->
+      <div id="modal-detail" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <!-- 弹窗头部 -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
+            <h2 class="text-lg font-semibold text-on-surface">处置详情</h2>
+            <button id="btn-modal-close" class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <!-- 弹窗内容 -->
+          <div class="p-6 space-y-5">
+            <!-- 基本信息 -->
+            <div>
+              <h3 class="text-sm font-semibold text-on-surface mb-3">基本信息</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <span class="text-xs text-on-surface-variant">处置编号</span>
+                  <p id="detail-code" class="text-sm font-medium text-on-surface mt-0.5">CZ-2024-0001</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">处置类型</span>
+                  <p id="detail-type" class="text-sm font-medium text-on-surface mt-0.5">初步核实</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">处置时间</span>
+                  <p id="detail-date" class="text-sm font-medium text-on-surface mt-0.5">2024-03-15</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">当前状态</span>
+                  <p id="detail-status" class="text-sm font-medium text-on-surface mt-0.5">处置中</p>
+                </div>
+              </div>
+            </div>
+            <!-- 涉及人员信息 -->
+            <div>
+              <h3 class="text-sm font-semibold text-on-surface mb-3">涉及人员信息</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <span class="text-xs text-on-surface-variant">姓名</span>
+                  <p id="detail-person" class="text-sm font-medium text-on-surface mt-0.5">张*明</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">涉及单位</span>
+                  <p id="detail-unit" class="text-sm font-medium text-on-surface mt-0.5">市文化和旅游局</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">职务</span>
+                  <p id="detail-position" class="text-sm font-medium text-on-surface mt-0.5">市场管理科科长</p>
+                </div>
+                <div>
+                  <span class="text-xs text-on-surface-variant">政治面貌</span>
+                  <p id="detail-political" class="text-sm font-medium text-on-surface mt-0.5">中共党员</p>
+                </div>
+              </div>
+            </div>
+            <!-- 处置事项 -->
+            <div>
+              <h3 class="text-sm font-semibold text-on-surface mb-3">处置事项</h3>
+              <p id="detail-matter" class="text-sm text-on-surface bg-surface-container rounded-md p-3">反映市文旅局张某违规接受管理服务对象宴请问题</p>
+            </div>
+            <!-- 处置进展 -->
+            <div>
+              <h3 class="text-sm font-semibold text-on-surface mb-3">处置进展</h3>
+              <div id="detail-progress" class="space-y-3">
+                <div class="flex gap-3">
+                  <div class="flex flex-col items-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-success shrink-0 mt-1.5"></div>
+                    <div class="w-0.5 flex-1 bg-outline-variant/30 my-0.5"></div>
+                  </div>
+                  <div class="pb-3">
+                    <p class="text-sm font-medium text-on-surface">线索接收</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">2024-03-10 收到群众举报线索</p>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <div class="flex flex-col items-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-success shrink-0 mt-1.5"></div>
+                    <div class="w-0.5 flex-1 bg-outline-variant/30 my-0.5"></div>
+                  </div>
+                  <div class="pb-3">
+                    <p class="text-sm font-medium text-on-surface">初步核实启动</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">2024-03-15 经批准启动初步核实程序</p>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <div class="flex flex-col items-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-warning shrink-0 mt-1.5"></div>
+                    <div class="w-0.5 flex-1 bg-outline-variant/30 my-0.5"></div>
+                  </div>
+                  <div class="pb-3">
+                    <p class="text-sm font-medium text-on-surface">调查取证中</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">2024-04-02 正在开展谈话和调取相关材料</p>
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <div class="flex flex-col items-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-outline-variant shrink-0 mt-1.5"></div>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-on-surface-variant">形成处置意见</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">待完成</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 附件 -->
+            <div>
+              <h3 class="text-sm font-semibold text-on-surface mb-3">相关附件</h3>
+              <div class="space-y-2">
+                <div class="flex items-center gap-3 bg-surface-container rounded-md px-3 py-2">
+                  <i data-lucide="file-text" class="w-4 h-4 text-primary shrink-0"></i>
+                  <span class="text-sm text-on-surface flex-1">初步核实呈批表.pdf</span>
+                  <button class="text-primary text-xs font-medium hover:underline shrink-0">下载</button>
+                </div>
+                <div class="flex items-center gap-3 bg-surface-container rounded-md px-3 py-2">
+                  <i data-lucide="file-text" class="w-4 h-4 text-primary shrink-0"></i>
+                  <span class="text-sm text-on-surface flex-1">谈话记录_张某某_20240402.pdf</span>
+                  <button class="text-primary text-xs font-medium hover:underline shrink-0">下载</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 弹窗底部 -->
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-outline-variant/20">
+            <button id="btn-modal-close-bottom" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium
+                           hover:bg-surface-container-high active:scale-[0.98] transition-all">关闭</button>
+          </div>
+        </div>
+      </div>
+
+    <!-- @main-content:end -->
+    </main>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+    $(function() {
+
+      // ========== 筛选区域交互 ==========
+
+      // 查询按钮 - 根据筛选条件过滤列表
+      $('#btn-search').on('click', function() {
+        var typeVal = $('#filter-type').val();
+        var unitVal = $('#filter-unit').val();
+        var statusVal = $('#filter-status').val();
+        var dateStart = $('#filter-date-start').val();
+        var dateEnd = $('#filter-date-end').val();
+        console.log('筛选条件:', { type: typeVal, unit: unitVal, status: statusVal, dateStart: dateStart, dateEnd: dateEnd });
+        // 筛选逻辑：
+        // 1. 遍历表格中每条数据行（grid-cols-8），根据筛选条件匹配
+        // 2. 处置类型匹配第5列文本、涉及单位匹配第4列文本、状态匹配第7列文本
+        // 3. 日期范围匹配第6列日期值
+        // 4. 匹配成功的行 show()，不匹配的行 hide()
+        // 5. 更新分页信息（记录数、页码）
+        alert('已应用筛选条件，列表已更新。');
+      });
+
+      // 重置按钮 - 清空所有筛选条件并恢复全部列表
+      $('#btn-reset').on('click', function() {
+        $('#filter-type').val('');
+        $('#filter-unit').val('');
+        $('#filter-status').val('');
+        $('#filter-date-start').val('2024-01-01');
+        $('#filter-date-end').val('2024-12-31');
+        // 显示所有数据行
+        $('.grid.grid-cols-8').not(':first').show();
+        console.log('筛选条件已重置');
+      });
+
+      // ========== 导出 Excel ==========
+      $('#btn-export').on('click', function() {
+        console.log('导出Excel：需要调用后端接口生成并下载处置台账Excel文件');
+        // 导出逻辑：
+        // 1. 收集当前筛选条件
+        // 2. 调用后端导出接口 POST /api/ledger/dispose/export
+        // 3. 接收 Blob 文件流并触发浏览器下载
+        // 4. 文件名格式：处置台账_YYYYMMDD_HHmmss.xlsx
+        alert('正在导出处置台账Excel文件，请稍候...');
+      });
+
+      // ========== 详情弹窗 ==========
+
+      // 模拟详情数据映射
+      var detailData = {
+        1: {
+          code: 'CZ-2024-0001',
+          type: '初步核实',
+          date: '2024-03-15',
+          status: '处置中',
+          person: '张*明',
+          unit: '市文化和旅游局',
+          position: '市场管理科科长',
+          political: '中共党员',
+          matter: '反映市文旅局张某违规接受管理服务对象宴请问题',
+          progress: [
+            { title: '线索接收', desc: '2024-03-10 收到群众举报线索', done: true },
+            { title: '初步核实启动', desc: '2024-03-15 经批准启动初步核实程序', done: true },
+            { title: '调查取证中', desc: '2024-04-02 正在开展谈话和调取相关材料', done: false, active: true },
+            { title: '形成处置意见', desc: '待完成', done: false }
+          ]
+        },
+        2: {
+          code: 'CZ-2024-0002',
+          type: '立案审查',
+          date: '2024-02-28',
+          status: '处置中',
+          person: '李*华',
+          unit: '市广播电视局',
+          position: '基建处处长',
+          political: '中共党员',
+          matter: '反映市广电局李某在工程项目招标中收受好处费',
+          progress: [
+            { title: '线索接收', desc: '2024-02-20 收到审计移送线索', done: true },
+            { title: '初步核实', desc: '2024-02-25 初步核实完成，建议立案', done: true },
+            { title: '立案审查', desc: '2024-02-28 经批准立案审查', done: true },
+            { title: '审查调查中', desc: '2024-03-15 正在开展审查调查工作', done: false, active: true }
+          ]
+        },
+        3: {
+          code: 'CZ-2024-0003',
+          type: '谈话函询',
+          date: '2024-04-10',
+          status: '已办结',
+          person: '王*强',
+          unit: '市体育局',
+          position: '群众体育处副处长',
+          political: '中共党员',
+          matter: '反映市体育局王某利用职务便利为亲属谋取利益',
+          progress: [
+            { title: '线索接收', desc: '2024-04-05 收到信访举报', done: true },
+            { title: '谈话函询', desc: '2024-04-10 发出函询通知书', done: true },
+            { title: '函询回复', desc: '2024-04-20 收到被反映人书面说明', done: true },
+            { title: '予以了结', desc: '2024-05-08 经研究予以了结', done: true }
+          ]
+        },
+        4: {
+          code: 'CZ-2024-0004',
+          type: '初步核实',
+          date: '2024-05-22',
+          status: '处置中',
+          person: '赵*峰',
+          unit: '市旅游发展集团',
+          position: '集团副总经理',
+          political: '中共党员',
+          matter: '反映市旅游集团赵某公款旅游及违规报销问题',
+          progress: [
+            { title: '线索接收', desc: '2024-05-18 收到巡察移交线索', done: true },
+            { title: '初步核实启动', desc: '2024-05-22 经批准启动初步核实', done: true },
+            { title: '外调核查中', desc: '2024-06-10 正在核查财务报销凭证', done: false, active: true }
+          ]
+        },
+        5: {
+          code: 'CZ-2024-0005',
+          type: '予以了结',
+          date: '2024-01-18',
+          status: '已了结',
+          person: '陈*芳',
+          unit: '市文化艺术中心',
+          position: '财务科科长',
+          political: '中共党员',
+          matter: '反映市文化艺术中心陈某违规发放津补贴',
+          progress: [
+            { title: '线索接收', desc: '2024-01-10 收到群众举报', done: true },
+            { title: '初步核实', desc: '2024-01-15 经核实反映问题失实', done: true },
+            { title: '予以了结', desc: '2024-01-18 经研究予以了结', done: true }
+          ]
+        },
+        6: {
+          code: 'CZ-2024-0006',
+          type: '立案审查',
+          date: '2024-06-05',
+          status: '处置中',
+          person: '刘*伟',
+          unit: '市文化和旅游局',
+          position: '行政审批科科长',
+          political: '中共党员',
+          matter: '反映市文旅局刘某在文化项目审批中吃拿卡要',
+          progress: [
+            { title: '线索接收', desc: '2024-05-28 收到群众实名举报', done: true },
+            { title: '初步核实', desc: '2024-06-02 初步核实完成，建议立案', done: true },
+            { title: '立案审查', desc: '2024-06-05 经批准立案审查', done: true },
+            { title: '审查调查中', desc: '2024-06-20 正在开展谈话和取证', done: false, active: true }
+          ]
+        },
+        7: {
+          code: 'CZ-2024-0007',
+          type: '谈话函询',
+          date: '2024-07-12',
+          status: '已办结',
+          person: '黄*刚',
+          unit: '市体育局',
+          position: '竞技体育处主任科员',
+          political: '中共党员',
+          matter: '反映市体育局黄某违规兼职取酬问题',
+          progress: [
+            { title: '线索接收', desc: '2024-07-08 收到信访举报', done: true },
+            { title: '谈话函询', desc: '2024-07-12 进行谈话', done: true },
+            { title: '谈话说明', desc: '2024-07-15 被反映人作出说明', done: true },
+            { title: '予以了结', desc: '2024-08-01 经研究予以了结', done: true }
+          ]
+        },
+        8: {
+          code: 'CZ-2024-0008',
+          type: '初步核实',
+          date: '2024-08-03',
+          status: '处置中',
+          person: '周*敏',
+          unit: '市广播电视局',
+          position: '传媒管理科科长',
+          political: '中共党员',
+          matter: '反映市广电局周某违规操办婚丧喜庆事宜',
+          progress: [
+            { title: '线索接收', desc: '2024-07-28 收到群众举报', done: true },
+            { title: '初步核实启动', desc: '2024-08-03 经批准启动初步核实', done: true },
+            { title: '调查取证中', desc: '2024-08-15 正在调取相关证据材料', done: false, active: true }
+          ]
+        }
+      };
+
+      // 打开详情弹窗
+      $('[id^="btn-detail-"]').on('click', function() {
+        var id = $(this).attr('id').replace('btn-detail-', '');
+        var data = detailData[id];
+        if (!data) return;
+
+        // 填充弹窗内容
+        $('#detail-code').text(data.code);
+        $('#detail-type').text(data.type);
+        $('#detail-date').text(data.date);
+        $('#detail-status').text(data.status);
+        $('#detail-person').text(data.person);
+        $('#detail-unit').text(data.unit);
+        $('#detail-position').text(data.position);
+        $('#detail-political').text(data.political);
+        $('#detail-matter').text(data.matter);
+
+        // 构建进展时间线
+        var progressHtml = '';
+        $.each(data.progress, function(i, item) {
+          var dotClass = item.done ? 'bg-success' : (item.active ? 'bg-warning' : 'bg-outline-variant');
+          var titleClass = item.done || item.active ? 'text-on-surface font-medium' : 'text-on-surface-variant font-medium';
+          var hasLine = i < data.progress.length - 1;
+          progressHtml += '<div class="flex gap-3">';
+          progressHtml += '<div class="flex flex-col items-center">';
+          progressHtml += '<div class="w-2.5 h-2.5 rounded-full ' + dotClass + ' shrink-0 mt-1.5"></div>';
+          if (hasLine) {
+            progressHtml += '<div class="w-0.5 flex-1 bg-outline-variant/30 my-0.5"></div>';
+          }
+          progressHtml += '</div>';
+          progressHtml += '<div class="' + (hasLine ? 'pb-3' : '') + '">';
+          progressHtml += '<p class="text-sm ' + titleClass + '">' + item.title + '</p>';
+          progressHtml += '<p class="text-xs text-on-surface-variant mt-0.5">' + item.desc + '</p>';
+          progressHtml += '</div>';
+          progressHtml += '</div>';
+        });
+        $('#detail-progress').html(progressHtml);
+
+        // 显示弹窗
+        $('#modal-detail').removeClass('hidden');
+        // 重新渲染图标
+        lucide.createIcons();
+      });
+
+      // 关闭详情弹窗
+      function closeModal() {
+        $('#modal-detail').addClass('hidden');
+      }
+
+      $('#btn-modal-close').on('click', closeModal);
+      $('#btn-modal-close-bottom').on('click', closeModal);
+
+      // 点击遮罩层关闭弹窗
+      $('#modal-detail').on('click', function(e) {
+        if (e.target === this) {
+          closeModal();
+        }
+      });
+
+      // ESC 关闭弹窗
+      $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && !$('#modal-detail').hasClass('hidden')) {
+          closeModal();
+        }
+      });
+
+      // ========== 分页按钮 ==========
+      $('#btn-prev').on('click', function() {
+        console.log('上一页');
+        // 分页逻辑：
+        // 1. 计算当前页码，减1后加载上一页数据
+        // 2. 更新分页按钮状态（第一页时禁用上一页）
+        // 3. 更新记录数显示
+      });
+
+      $('#btn-next').on('click', function() {
+        console.log('下一页');
+        // 分页逻辑：
+        // 1. 计算当前页码，加1后加载下一页数据
+        // 2. 更新分页按钮状态（最后一页时禁用下一页）
+        // 3. 更新记录数显示
+      });
+
+    });
+  </script>
+</body>
+
+</html>

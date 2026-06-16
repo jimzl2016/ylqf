@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+
+      <!-- 页面头部：面包屑 + 标题 -->
+      <div class="px-6 pt-6 pb-2">
+        <div class="flex items-center gap-1.5 text-xs text-on-surface-variant mb-1">
+          <a href="archive-list.html" class="hover:text-primary transition-colors">档案管理</a>
+          <i data-lucide="chevron-right" class="w-3 h-3"></i>
+          <span class="text-on-surface-variant/70">档案列表</span>
+          <i data-lucide="chevron-right" class="w-3 h-3"></i>
+          <span class="text-on-surface font-medium">档案信息对比</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">档案信息对比</h1>
+            <p class="text-sm text-on-surface-variant mt-1">对比同一人员档案的两个版本，差异字段以黄色高亮标注</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="btn-back" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>返回列表
+            </button>
+            <button id="btn-export-diff" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>导出差异报告
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 版本选择器 -->
+      <div class="px-6 pt-4 pb-2">
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center gap-6">
+            <!-- 版本A -->
+            <div class="flex-1">
+              <label class="block text-xs font-medium text-on-surface-variant mb-1.5">版本 A（基准版本）</label>
+              <div class="flex items-center gap-3">
+                <select id="select-version-a" class="flex-1 bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer" style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2378716C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2.5rem;">
+                  <option value="v3">V3 - 2025-01-15 14:30（当前版本）</option>
+                  <option value="v2">V2 - 2024-12-08 09:15</option>
+                  <option value="v1">V1 - 2024-10-22 16:45</option>
+                </select>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary whitespace-nowrap">当前版本</span>
+              </div>
+            </div>
+            <!-- 交换按钮 -->
+            <button id="btn-swap" class="w-10 h-10 rounded-full bg-surface-container hover:bg-surface-container-high transition-colors flex items-center justify-center shrink-0 mt-5" title="交换版本">
+              <i data-lucide="arrow-left-right" class="w-4 h-4 text-on-surface-variant"></i>
+            </button>
+            <!-- 版本B -->
+            <div class="flex-1">
+              <label class="block text-xs font-medium text-on-surface-variant mb-1.5">版本 B（对比版本）</label>
+              <select id="select-version-b" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer" style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2378716C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2.5rem;">
+                <option value="v2" selected>V2 - 2024-12-08 09:15</option>
+                <option value="v3">V3 - 2025-01-15 14:30（当前版本）</option>
+                <option value="v1">V1 - 2024-10-22 16:45</option>
+              </select>
+            </div>
+          </div>
+          <!-- 差异统计 -->
+          <div class="flex items-center gap-4 mt-4 pt-4 border-t border-outline-variant/20">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-sm bg-warning/30 border border-warning/50"></span>
+              <span class="text-xs text-on-surface-variant">差异字段</span>
+              <span id="diff-count" class="text-sm font-semibold text-warning">5 处</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-sm bg-surface-container"></span>
+              <span class="text-xs text-on-surface-variant">一致字段</span>
+              <span id="same-count" class="text-sm font-semibold text-on-surface-variant">18 处</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 双栏对比区 -->
+      <div class="px-6 pt-4 pb-6">
+        <div class="grid grid-cols-2 gap-4">
+
+          <!-- ========== 左栏：版本A ========== -->
+          <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+            <div class="px-5 py-3 bg-surface-container border-b border-outline-variant/20">
+              <div class="flex items-center gap-2">
+                <span id="label-version-a" class="text-sm font-semibold text-on-surface">版本 A：V3（当前版本）</span>
+                <span class="text-xs text-on-surface-variant">2025-01-15 14:30 · 张书记</span>
+              </div>
+            </div>
+            <div class="p-5 space-y-6">
+
+              <!-- 基本信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="user" class="w-4 h-4 text-primary"></i>基本信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-姓名 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">姓名</span>
+                    <span class="text-sm font-medium text-on-surface">陈建国</span>
+                  </div>
+                  <!-- 字段-性别 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">性别</span>
+                    <span class="text-sm text-on-surface">男</span>
+                  </div>
+                  <!-- 字段-出生日期（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">出生日期</span>
+                    <span class="text-sm font-medium text-on-surface">1972-08-15</span>
+                  </div>
+                  <!-- 字段-身份证号 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">身份证号</span>
+                    <span class="text-sm text-on-surface">3201****19720815****</span>
+                  </div>
+                  <!-- 字段-民族 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">民族</span>
+                    <span class="text-sm text-on-surface">汉族</span>
+                  </div>
+                  <!-- 字段-籍贯 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">籍贯</span>
+                    <span class="text-sm text-on-surface">江苏省南京市</span>
+                  </div>
+                  <!-- 字段-政治面貌（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">政治面貌</span>
+                    <span class="text-sm font-medium text-on-surface">中共党员</span>
+                  </div>
+                  <!-- 字段-入党时间 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">入党时间</span>
+                    <span class="text-sm text-on-surface">1998-06-20</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 职务信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="briefcase" class="w-4 h-4 text-primary"></i>职务信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-所在单位 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">所在单位</span>
+                    <span class="text-sm text-on-surface">南京市文化和旅游局</span>
+                  </div>
+                  <!-- 字段-部门（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">所在部门</span>
+                    <span class="text-sm font-medium text-on-surface">艺术处（文化市场管理处）</span>
+                  </div>
+                  <!-- 字段-职务 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">现任职务</span>
+                    <span class="text-sm text-on-surface">处长</span>
+                  </div>
+                  <!-- 字段-职级（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">职级</span>
+                    <span class="text-sm font-medium text-on-surface">正处级（调研员）</span>
+                  </div>
+                  <!-- 字段-任职时间 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">任职时间</span>
+                    <span class="text-sm text-on-surface">2023-03-15</span>
+                  </div>
+                  <!-- 字段-分管领域 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">分管领域</span>
+                    <span class="text-sm text-on-surface">文化艺术市场审批与监管</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 廉政信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="shield-alert" class="w-4 h-4 text-primary"></i>廉政信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-四种形态 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">四种形态</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">第一种形态</span>
+                  </div>
+                  <!-- 字段-最近考核 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">最近考核</span>
+                    <span class="text-sm text-on-surface">2024年度 · 称职</span>
+                  </div>
+                  <!-- 字段-违纪记录（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">违纪记录</span>
+                    <span class="text-sm font-medium text-on-surface">2024-09 诫勉谈话（招采项目程序瑕疵）</span>
+                  </div>
+                  <!-- 字段-重大事项报告 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">重大事项</span>
+                    <span class="text-sm text-on-surface">2024-06 子女出国留学已报备</span>
+                  </div>
+                  <!-- 字段-个人有关事项 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">个人事项</span>
+                    <span class="text-sm text-on-surface">2024年度已如实填报</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ========== 右栏：版本B ========== -->
+          <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+            <div class="px-5 py-3 bg-surface-container border-b border-outline-variant/20">
+              <div class="flex items-center gap-2">
+                <span id="label-version-b" class="text-sm font-semibold text-on-surface">版本 B：V2</span>
+                <span class="text-xs text-on-surface-variant">2024-12-08 09:15 · 李主任</span>
+              </div>
+            </div>
+            <div class="p-5 space-y-6">
+
+              <!-- 基本信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="user" class="w-4 h-4 text-primary"></i>基本信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-姓名 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">姓名</span>
+                    <span class="text-sm font-medium text-on-surface">陈建国</span>
+                  </div>
+                  <!-- 字段-性别 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">性别</span>
+                    <span class="text-sm text-on-surface">男</span>
+                  </div>
+                  <!-- 字段-出生日期（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">出生日期</span>
+                    <span class="text-sm font-medium text-on-surface">1972-08-20</span>
+                  </div>
+                  <!-- 字段-身份证号 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">身份证号</span>
+                    <span class="text-sm text-on-surface">3201****19720815****</span>
+                  </div>
+                  <!-- 字段-民族 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">民族</span>
+                    <span class="text-sm text-on-surface">汉族</span>
+                  </div>
+                  <!-- 字段-籍贯 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">籍贯</span>
+                    <span class="text-sm text-on-surface">江苏省南京市</span>
+                  </div>
+                  <!-- 字段-政治面貌（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">政治面貌</span>
+                    <span class="text-sm font-medium text-on-surface">中共预备党员</span>
+                  </div>
+                  <!-- 字段-入党时间 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">入党时间</span>
+                    <span class="text-sm text-on-surface">1998-06-20</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 职务信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="briefcase" class="w-4 h-4 text-primary"></i>职务信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-所在单位 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">所在单位</span>
+                    <span class="text-sm text-on-surface">南京市文化和旅游局</span>
+                  </div>
+                  <!-- 字段-部门（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">所在部门</span>
+                    <span class="text-sm font-medium text-on-surface">公共服务处</span>
+                  </div>
+                  <!-- 字段-职务 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">现任职务</span>
+                    <span class="text-sm text-on-surface">处长</span>
+                  </div>
+                  <!-- 字段-职级（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">职级</span>
+                    <span class="text-sm font-medium text-on-surface">正处级</span>
+                  </div>
+                  <!-- 字段-任职时间 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">任职时间</span>
+                    <span class="text-sm text-on-surface">2023-03-15</span>
+                  </div>
+                  <!-- 字段-分管领域 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">分管领域</span>
+                    <span class="text-sm text-on-surface">文化艺术市场审批与监管</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 廉政信息 -->
+              <div>
+                <h3 class="text-sm font-semibold text-on-surface mb-3 flex items-center gap-2">
+                  <i data-lucide="shield-alert" class="w-4 h-4 text-primary"></i>廉政信息
+                </h3>
+                <div class="space-y-2.5">
+                  <!-- 字段-四种形态 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">四种形态</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">第一种形态</span>
+                  </div>
+                  <!-- 字段-最近考核 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">最近考核</span>
+                    <span class="text-sm text-on-surface">2023年度 · 优秀</span>
+                  </div>
+                  <!-- 字段-违纪记录（差异） -->
+                  <div class="flex items-start gap-3 bg-warning/10 rounded-md px-2 py-1.5 -mx-2">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">违纪记录</span>
+                    <span class="text-sm font-medium text-on-surface">无</span>
+                  </div>
+                  <!-- 字段-重大事项报告 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">重大事项</span>
+                    <span class="text-sm text-on-surface">2024-06 子女出国留学已报备</span>
+                  </div>
+                  <!-- 字段-个人有关事项 -->
+                  <div class="flex items-start gap-3">
+                    <span class="text-xs text-on-surface-variant w-20 shrink-0 pt-0.5">个人事项</span>
+                    <span class="text-sm text-on-surface">2024年度已如实填报</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 版本历史时间线 -->
+      <div class="px-6 pb-8">
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <h3 class="text-sm font-semibold text-on-surface mb-4 flex items-center gap-2">
+            <i data-lucide="git-branch" class="w-4 h-4 text-primary"></i>版本历史
+          </h3>
+          <div class="relative pl-8">
+            <!-- 时间线竖线 -->
+            <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-outline-variant/40"></div>
+
+            <!-- 版本-V3（当前） -->
+            <div class="relative pb-6">
+              <div class="absolute left-[-29px] top-1 w-4 h-4 rounded-full bg-primary border-2 border-surface shadow-sm"></div>
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-semibold text-on-surface">V3</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary">当前版本</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant">2025-01-15 14:30 · 张书记</p>
+                  <p class="text-xs text-on-surface-variant mt-1">更新出生日期、政治面貌、所在部门、职级、违纪记录信息</p>
+                </div>
+                <button class="text-xs text-primary font-medium hover:underline whitespace-nowrap mt-1" disabled>当前版本</button>
+              </div>
+            </div>
+
+            <!-- 版本-V2 -->
+            <div class="relative pb-6">
+              <div class="absolute left-[-29px] top-1 w-4 h-4 rounded-full bg-surface-container-high border-2 border-outline-variant/30 shadow-sm"></div>
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-semibold text-on-surface">V2</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant">2024-12-08 09:15 · 李主任</p>
+                  <p class="text-xs text-on-surface-variant mt-1">更新政治面貌为预备党员、修正出生日期、调整部门信息</p>
+                </div>
+                <button id="btn-restore-v2" class="text-xs text-primary font-medium hover:underline whitespace-nowrap mt-1">回退到此版本</button>
+              </div>
+            </div>
+
+            <!-- 版本-V1 -->
+            <div class="relative">
+              <div class="absolute left-[-29px] top-1 w-4 h-4 rounded-full bg-surface-container-high border-2 border-outline-variant/30 shadow-sm"></div>
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-sm font-semibold text-on-surface">V1</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant">2024-10-22 16:45 · 王科员</p>
+                  <p class="text-xs text-on-surface-variant mt-1">初始档案录入</p>
+                </div>
+                <button id="btn-restore-v1" class="text-xs text-primary font-medium hover:underline whitespace-nowrap mt-1">回退到此版本</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- @main-content:end -->
+    </main>
+  </div>
+
+  <script>
+    $(function() {
+
+      // ========== 返回列表 ==========
+      $('#btn-back').on('click', function() {
+        window.location.href = 'archive-list.html';
+      });
+
+      // ========== 导出差异报告 ==========
+      $('#btn-export-diff').on('click', function() {
+        console.log('需要调用后端接口生成差异报告并触发下载');
+        alert('差异报告导出中，请稍候...');
+      });
+
+      // ========== 交换版本 ==========
+      $('#btn-swap').on('click', function() {
+        var valA = $('#select-version-a').val();
+        var valB = $('#select-version-b').val();
+        $('#select-version-a').val(valB);
+        $('#select-version-b').val(valA);
+        updateVersionLabels();
+        console.log('版本已交换：A=' + $('#select-version-a').val() + ', B=' + $('#select-version-b').val());
+      });
+
+      // ========== 版本选择变更 ==========
+      $('#select-version-a, #select-version-b').on('change', function() {
+        updateVersionLabels();
+        // 实际项目中此处应重新加载对应版本数据并重新计算差异高亮
+        console.log('版本选择变更：A=' + $('#select-version-a').val() + ', B=' + $('#select-version-b').val());
+      });
+
+      // ========== 回退到指定版本 ==========
+      // 回退按钮 - 点击后应实现版本回退确认流程：
+      // 1. 弹出确认弹窗，提示"确认回退到 Vx 版本？回退后当前修改将丢失"
+      // 2. 用户确认后调用后端接口执行版本回退
+      // 3. 回退成功后刷新页面，显示回退后的版本内容
+      // 4. 回退失败则提示错误信息
+      $('#btn-restore-v2').on('click', function() {
+        console.log('需要调用后端接口回退到 V2 版本');
+        if (confirm('确认回退到 V2 版本？回退后当前 V3 版本的修改将丢失。')) {
+          alert('版本回退成功！');
+        }
+      });
+
+      $('#btn-restore-v1').on('click', function() {
+        console.log('需要调用后端接口回退到 V1 版本');
+        if (confirm('确认回退到 V1 版本？回退后当前所有修改将丢失。')) {
+          alert('版本回退成功！');
+        }
+      });
+
+      // ========== 更新版本标签 ==========
+      function updateVersionLabels() {
+        var versionNames = {
+          'v3': 'V3（当前版本）',
+          'v2': 'V2',
+          'v1': 'V1'
+        };
+        var versionTimes = {
+          'v3': '2025-01-15 14:30 · 张书记',
+          'v2': '2024-12-08 09:15 · 李主任',
+          'v1': '2024-10-22 16:45 · 王科员'
+        };
+        var valA = $('#select-version-a').val();
+        var valB = $('#select-version-b').val();
+        $('#label-version-a').text('版本 A：' + versionNames[valA]);
+        $('#label-version-b').text('版本 B：' + versionNames[valB]);
+        // 更新版本标签旁的时间信息
+        $('#label-version-a').siblings('.text-xs').text(versionTimes[valA]);
+        $('#label-version-b').siblings('.text-xs').text(versionTimes[valB]);
+      }
+
+    });
+  </script>
+
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>

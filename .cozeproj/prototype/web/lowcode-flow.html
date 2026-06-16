@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+      <div class="flex flex-col h-full">
+        <!-- 顶部工具栏 -->
+        <div id="flow-toolbar" class="h-14 bg-surface border-b border-outline-variant/20 flex items-center justify-between px-4 shrink-0">
+          <div class="flex items-center gap-3">
+            <i data-lucide="workflow" class="w-5 h-5 text-primary"></i>
+            <input id="flow-name-input" class="bg-surface-container border-none rounded-md px-3 py-1.5 text-sm font-semibold text-on-surface w-48 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="廉政案件审批流程" />
+            <span class="text-xs text-on-surface-variant/60 bg-surface-container px-2 py-0.5 rounded-sm">v2.1.0</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-undo" class="bg-surface-container text-on-surface-variant border-none px-2.5 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5" title="撤销">
+              <i data-lucide="undo-2" class="w-3.5 h-3.5"></i>撤销
+            </button>
+            <button id="btn-redo" class="bg-surface-container text-on-surface-variant border-none px-2.5 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5" title="重做">
+              <i data-lucide="redo-2" class="w-3.5 h-3.5"></i>重做
+            </button>
+            <span class="w-px h-5 bg-outline-variant/30"></span>
+            <button id="btn-import" class="bg-surface-container text-on-surface-variant border-none px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>导入
+            </button>
+            <button id="btn-export" class="bg-surface-container text-on-surface-variant border-none px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>导出
+            </button>
+            <span class="w-px h-5 bg-outline-variant/30"></span>
+            <button id="btn-save" class="bg-surface-container text-on-surface-variant border-none px-3 py-1.5 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="save" class="w-3.5 h-3.5"></i>保存
+            </button>
+            <button id="btn-publish" class="bg-primary text-on-primary px-4 py-1.5 rounded-md text-xs font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+              <i data-lucide="rocket" class="w-3.5 h-3.5"></i>发布
+            </button>
+          </div>
+        </div>
+
+        <!-- 主体三栏区域 -->
+        <div class="flex flex-1 min-h-0">
+          <!-- 左侧节点面板 -->
+          <div id="node-panel" class="w-48 bg-surface border-r border-outline-variant/20 shrink-0 overflow-y-auto flex flex-col">
+            <div class="px-3 py-3 border-b border-outline-variant/20">
+              <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">节点库</span>
+            </div>
+            <div class="flex-1 px-2 py-2 space-y-1">
+              <!-- 节点-开始节点 -->
+              <div id="node-start" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="start">
+                <div class="w-8 h-8 rounded-full bg-success/15 flex items-center justify-center shrink-0">
+                  <i data-lucide="play" class="w-4 h-4 text-success"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">开始节点</span>
+              </div>
+              <!-- 节点-审批节点 -->
+              <div id="node-approval" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="approval">
+                <div class="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
+                  <i data-lucide="user-check" class="w-4 h-4 text-primary"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">审批节点</span>
+              </div>
+              <!-- 节点-条件分支 -->
+              <div id="node-condition" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="condition">
+                <div class="w-8 h-8 rounded-lg bg-warning/15 flex items-center justify-center shrink-0">
+                  <i data-lucide="git-branch" class="w-4 h-4 text-warning"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">条件分支</span>
+              </div>
+              <!-- 节点-并行分支 -->
+              <div id="node-parallel" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="parallel">
+                <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="git-fork" class="w-4 h-4 text-primary"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">并行分支</span>
+              </div>
+              <!-- 节点-抄送节点 -->
+              <div id="node-cc" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="cc">
+                <div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+                  <i data-lucide="send" class="w-4 h-4 text-on-surface-variant"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">抄送节点</span>
+              </div>
+              <!-- 节点-结束节点 -->
+              <div id="node-end" class="draggable-node flex items-center gap-2.5 px-3 py-2.5 rounded-md cursor-grab hover:bg-surface-container transition-colors border border-outline-variant/20 bg-surface" data-node-type="end">
+                <div class="w-8 h-8 rounded-full bg-error/15 flex items-center justify-center shrink-0">
+                  <i data-lucide="stop-circle" class="w-4 h-4 text-error"></i>
+                </div>
+                <span class="text-sm font-medium text-on-surface">结束节点</span>
+              </div>
+            </div>
+            <div class="px-3 py-2 border-t border-outline-variant/20">
+              <span class="text-xs text-on-surface-variant/60">拖拽节点到画布添加</span>
+            </div>
+          </div>
+
+          <!-- 中间画布区域 -->
+          <div id="canvas-wrapper" class="flex-1 min-w-0 bg-surface-container-lowest relative overflow-hidden">
+            <!-- 画布网格背景 -->
+            <div id="flow-canvas" class="absolute inset-0" style="background-image: radial-gradient(circle, #d4d4d4 1px, transparent 1px); background-size: 24px 24px;">
+              <!-- 画布中的节点 -->
+              <!-- 画布节点-开始 -->
+              <div id="canvas-node-start" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-success/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 60px;" data-node-id="start-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-success/15 flex items-center justify-center">
+                    <i data-lucide="play" class="w-3.5 h-3.5 text-success"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">开始</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">流程发起</div>
+              </div>
+
+              <!-- 画布节点-审批1：部门负责人审批 -->
+              <div id="canvas-node-approval-1" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-primary/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 180px;" data-node-id="approval-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-primary"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">部门负责人审批</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">审批人：李**</div>
+              </div>
+
+              <!-- 画布节点-条件分支 -->
+              <div id="canvas-node-condition-1" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-warning/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 300px;" data-node-id="condition-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-warning/15 flex items-center justify-center">
+                    <i data-lucide="git-branch" class="w-3.5 h-3.5 text-warning"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">金额判断</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">条件：涉案金额</div>
+              </div>
+
+              <!-- 画布节点-审批2：纪检组长审批（条件分支左路） -->
+              <div id="canvas-node-approval-2" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-primary/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 160px; top: 430px;" data-node-id="approval-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-primary"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">纪检组长审批</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">条件：金额≥5万</div>
+              </div>
+
+              <!-- 画布节点-审批3：分管领导审批（条件分支右路） -->
+              <div id="canvas-node-approval-3" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-primary/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 460px; top: 430px;" data-node-id="approval-3">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-primary/15 flex items-center justify-center">
+                    <i data-lucide="user-check" class="w-3.5 h-3.5 text-primary"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">分管领导审批</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">条件：金额&lt;5万</div>
+              </div>
+
+              <!-- 画布节点-并行分支 -->
+              <div id="canvas-node-parallel-1" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-primary/20 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 560px;" data-node-id="parallel-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <i data-lucide="git-fork" class="w-3.5 h-3.5 text-primary"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">并行汇签</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">同步审批</div>
+              </div>
+
+              <!-- 画布节点-抄送 -->
+              <div id="canvas-node-cc-1" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-outline-variant/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 690px;" data-node-id="cc-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-lg bg-surface-container-high flex items-center justify-center">
+                    <i data-lucide="send" class="w-3.5 h-3.5 text-on-surface-variant"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">抄送备案</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">抄送：纪委办公室</div>
+              </div>
+
+              <!-- 画布节点-结束 -->
+              <div id="canvas-node-end-1" class="canvas-node absolute bg-surface rounded-xl shadow-card border-2 border-error/30 px-5 py-3 cursor-pointer hover:shadow-float transition-shadow" style="left: 300px; top: 810px;" data-node-id="end-1">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-error/15 flex items-center justify-center">
+                    <i data-lucide="stop-circle" class="w-3.5 h-3.5 text-error"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-on-surface">结束</span>
+                </div>
+                <div class="text-xs text-on-surface-variant mt-1">流程完结</div>
+              </div>
+
+              <!-- SVG 连线层 -->
+              <svg id="edges-svg" class="absolute inset-0 pointer-events-none" style="width: 100%; height: 100%;">
+                <!-- 连线：开始 → 部门负责人审批 -->
+                <line x1="355" y1="112" x2="355" y2="180" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：部门负责人审批 → 金额判断 -->
+                <line x1="355" y1="232" x2="355" y2="300" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：金额判断 → 纪检组长审批（左） -->
+                <line x1="300" y1="352" x2="215" y2="430" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：金额判断 → 分管领导审批（右） -->
+                <line x1="410" y1="352" x2="515" y2="430" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：纪检组长审批 → 并行汇签 -->
+                <line x1="215" y1="482" x2="355" y2="560" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：分管领导审批 → 并行汇签 -->
+                <line x1="515" y1="482" x2="355" y2="560" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：并行汇签 → 抄送备案 -->
+                <line x1="355" y1="612" x2="355" y2="690" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 连线：抄送备案 → 结束 -->
+                <line x1="355" y1="742" x2="355" y2="810" stroke="#D6D3D1" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <!-- 箭头定义 -->
+                <defs>
+                  <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#D6D3D1"/>
+                  </marker>
+                </defs>
+              </svg>
+            </div>
+            <!-- 画布提示 -->
+            <div class="absolute bottom-3 right-3 text-xs text-on-surface-variant/50 bg-surface/80 px-2 py-1 rounded">
+              拖拽节点到画布 · 点击节点查看属性 · 滚轮缩放
+            </div>
+          </div>
+
+          <!-- 右侧属性配置面板 -->
+          <div id="props-panel" class="w-72 bg-surface border-l border-outline-variant/20 shrink-0 overflow-y-auto flex flex-col">
+            <div class="px-4 py-3 border-b border-outline-variant/20">
+              <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">属性配置</span>
+            </div>
+            <div id="props-content" class="flex-1 px-4 py-4 space-y-5">
+              <!-- 默认提示：请选择节点 -->
+              <div id="props-placeholder" class="flex flex-col items-center justify-center py-12 text-center">
+                <i data-lucide="mouse-pointer-click" class="w-8 h-8 text-on-surface-variant/30 mb-3"></i>
+                <span class="text-sm text-on-surface-variant/50">点击画布中的节点</span>
+                <span class="text-xs text-on-surface-variant/30 mt-1">查看和编辑属性</span>
+              </div>
+
+              <!-- 审批节点属性（默认展示审批节点1的属性） -->
+              <div id="props-approval" class="hidden space-y-5">
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">节点名称</label>
+                  <input id="prop-node-name" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="部门负责人审批" />
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">节点类型</label>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-sm text-xs font-medium bg-primary/10 text-primary">审批节点</span>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">审批人设置</label>
+                  <select id="prop-approver-type" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                    <option value="role" selected>指定角色</option>
+                    <option value="user">指定人员</option>
+                    <option value="superior">上级主管</option>
+                    <option value="custom">自定义规则</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">审批角色</label>
+                  <select id="prop-approver-role" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                    <option value="dept_head" selected>部门负责人</option>
+                    <option value="discipline_head">纪检组长</option>
+                    <option value="deputy_director">分管领导</option>
+                    <option value="committee">纪委委员</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">审批规则</label>
+                  <select id="prop-approval-rule" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                    <option value="single" selected>单人审批</option>
+                    <option value="multi">多人会签（全部同意）</option>
+                    <option value="any">多人会签（任一同意）</option>
+                    <option value="ratio">按比例通过（≥50%）</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">超时设置</label>
+                  <div class="flex items-center gap-2">
+                    <input id="prop-timeout-value" type="number" class="w-20 bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="48" />
+                    <select id="prop-timeout-unit" class="flex-1 bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                      <option value="hours" selected>小时</option>
+                      <option value="days">天</option>
+                      <option value="minutes">分钟</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">超时处理</label>
+                  <select id="prop-timeout-action" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                    <option value="remind" selected>自动提醒</option>
+                    <option value="escalate">自动升级</option>
+                    <option value="auto_pass">自动通过</option>
+                    <option value="auto_reject">自动驳回</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1.5">流转条件</label>
+                  <textarea id="prop-condition" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" rows="2" placeholder="请输入流转条件表达式">金额 >= 5000 && 部门 == "纪检监察室"</textarea>
+                </div>
+                <div class="pt-2 border-t border-outline-variant/20">
+                  <button id="btn-delete-node" class="w-full bg-error/10 text-error border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-error/20 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>删除节点
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部版本信息栏 -->
+        <div id="flow-footer" class="h-9 bg-surface-container border-t border-outline-variant/20 flex items-center justify-between px-4 shrink-0">
+          <div class="flex items-center gap-4 text-xs text-on-surface-variant/60">
+            <span>流程ID：FLW-2024-001583</span>
+            <span>创建人：张**</span>
+            <span>创建时间：2024-12-10 14:30:00</span>
+            <span>最后修改：2025-01-15 09:22:35</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-on-surface-variant/60">版本历史：</span>
+            <!-- 版本-当前版本 -->
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">v2.1.0 当前</span>
+            <!-- 版本-v2.0.0 -->
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs text-on-surface-variant/60 bg-surface-container-high cursor-pointer hover:text-on-surface transition-colors">v2.0.0</span>
+            <!-- 版本-v1.5.0 -->
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs text-on-surface-variant/60 bg-surface-container-high cursor-pointer hover:text-on-surface transition-colors">v1.5.0</span>
+            <!-- 版本-v1.0.0 -->
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs text-on-surface-variant/60 bg-surface-container-high cursor-pointer hover:text-on-surface transition-colors">v1.0.0</span>
+          </div>
+        </div>
+      </div>
+    <!-- @main-content:end -->
+  </main>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+    $(function() {
+
+      // ===== 节点选中交互 =====
+      // 点击画布中的节点，在右侧属性面板显示对应属性
+      $('.canvas-node').on('click', function(e) {
+        e.stopPropagation();
+        var nodeId = $(this).data('node-id');
+
+        // 移除所有节点的选中样式
+        $('.canvas-node').css({
+          'border-color': '',
+          'box-shadow': ''
+        });
+
+        // 设置当前节点选中样式
+        $(this).css({
+          'border-color': '#0D9488',
+          'box-shadow': '0 0 0 3px rgba(13,148,136,0.2)'
+        });
+
+        // 显示属性面板
+        showPropsPanel(nodeId);
+      });
+
+      // 点击画布空白区域取消选中
+      $('#flow-canvas').on('click', function(e) {
+        if ($(e.target).closest('.canvas-node').length === 0) {
+          $('.canvas-node').css({
+            'border-color': '',
+            'box-shadow': ''
+          });
+          $('#props-placeholder').removeClass('hidden');
+          $('#props-approval').addClass('hidden');
+        }
+      });
+
+      // 根据节点类型显示对应的属性面板
+      function showPropsPanel(nodeId) {
+        $('#props-placeholder').addClass('hidden');
+        $('#props-approval').addClass('hidden');
+
+        if (nodeId && nodeId.indexOf('approval') !== -1) {
+          // 审批节点属性
+          $('#props-approval').removeClass('hidden');
+          // 根据节点ID更新属性值
+          if (nodeId === 'approval-1') {
+            $('#prop-node-name').val('部门负责人审批');
+            $('#prop-approver-role').val('dept_head');
+          } else if (nodeId === 'approval-2') {
+            $('#prop-node-name').val('纪检组长审批');
+            $('#prop-approver-role').val('discipline_head');
+          } else if (nodeId === 'approval-3') {
+            $('#prop-node-name').val('分管领导审批');
+            $('#prop-approver-role').val('deputy_director');
+          }
+        } else if (nodeId && nodeId.indexOf('condition') !== -1) {
+          // 条件分支节点属性 - 显示审批属性面板并调整
+          $('#props-approval').removeClass('hidden');
+          $('#prop-node-name').val('金额判断');
+        } else if (nodeId && nodeId.indexOf('parallel') !== -1) {
+          $('#props-approval').removeClass('hidden');
+          $('#prop-node-name').val('并行汇签');
+        } else if (nodeId && nodeId.indexOf('cc') !== -1) {
+          $('#props-approval').removeClass('hidden');
+          $('#prop-node-name').val('抄送备案');
+        } else if (nodeId && nodeId.indexOf('start') !== -1) {
+          $('#props-approval').removeClass('hidden');
+          $('#prop-node-name').val('开始');
+        } else if (nodeId && nodeId.indexOf('end') !== -1) {
+          $('#props-approval').removeClass('hidden');
+          $('#prop-node-name').val('结束');
+        }
+      }
+
+      // ===== 拖拽添加节点 =====
+      // 拖拽功能：从左侧节点面板拖拽节点到画布
+      // 1. 在 draggable-node 上绑定 dragstart，设置拖拽数据（节点类型）
+      // 2. 在 flow-canvas 上绑定 dragover（阻止默认行为允许 drop）和 drop 事件
+      // 3. drop 时读取节点类型，在鼠标位置动态创建新的 canvas-node DOM 元素
+      // 4. 新节点默认选中，显示属性面板
+      // 5. 自动为新节点创建与最近节点的连线 SVG line 元素
+      $('.draggable-node').on('dragstart', function(e) {
+        var nodeType = $(this).data('node-type');
+        e.originalEvent.dataTransfer.setData('text/plain', nodeType);
+        e.originalEvent.dataTransfer.effectAllowed = 'copy';
+      });
+
+      $('#flow-canvas').on('dragover', function(e) {
+        e.preventDefault();
+        e.originalEvent.dataTransfer.dropEffect = 'copy';
+      });
+
+      $('#flow-canvas').on('drop', function(e) {
+        e.preventDefault();
+        var nodeType = e.originalEvent.dataTransfer.getData('text/plain');
+        var canvasOffset = $('#flow-canvas').offset();
+        var scrollLeft = $('#canvas-wrapper').scrollLeft();
+        var scrollTop = $('#canvas-wrapper').scrollTop();
+        var x = e.clientX - canvasOffset.left + scrollLeft - 70;
+        var y = e.clientY - canvasOffset.top + scrollTop - 25;
+
+        console.log('拖拽添加节点 - 类型:', nodeType, '位置:', x, y);
+        // 后续实现：
+        // 1. 根据 nodeType 生成对应节点 HTML（含图标、名称、边框色）
+        // 2. 生成唯一 nodeId（如 approval-{timestamp}）
+        // 3. 将节点 append 到 #flow-canvas，设置 left/top
+        // 4. 自动选中新节点，显示属性面板
+        // 5. 查找最近的节点，在 #edges-svg 中创建连线
+        // 6. 绑定新节点的 click 事件
+      });
+
+      // ===== 工具栏按钮 =====
+      // 保存按钮
+      $('#btn-save').on('click', function() {
+        alert('流程已保存！');
+      });
+
+      // 发布按钮
+      $('#btn-publish').on('click', function() {
+        if (confirm('确认发布当前流程？发布后将立即生效。')) {
+          alert('流程发布成功！');
+        }
+      });
+
+      // 导入按钮
+      $('#btn-import').on('click', function() {
+        console.log('导入流程：需要调用文件选择器，读取 JSON/XML 格式的流程定义文件并解析渲染到画布');
+        alert('请选择流程定义文件（支持 .json / .xml 格式）');
+      });
+
+      // 导出按钮
+      $('#btn-export').on('click', function() {
+        console.log('导出流程：将当前画布中的流程定义序列化为 JSON 并触发下载');
+        alert('流程定义已导出为 flow-definition.json');
+      });
+
+      // 撤销按钮
+      $('#btn-undo').on('click', function() {
+        console.log('撤销：回退到上一个操作状态');
+      });
+
+      // 重做按钮
+      $('#btn-redo').on('click', function() {
+        console.log('重做：恢复被撤销的操作');
+      });
+
+      // 删除节点按钮
+      $('#btn-delete-node').on('click', function() {
+        var selectedNode = $('.canvas-node').filter(function() {
+          return $(this).css('border-color') === 'rgb(13, 148, 136)';
+        });
+        if (selectedNode.length > 0 && confirm('确认删除选中的节点？')) {
+          selectedNode.remove();
+          $('#props-placeholder').removeClass('hidden');
+          $('#props-approval').addClass('hidden');
+          console.log('节点已删除，需同步删除 #edges-svg 中关联的连线');
+        }
+      });
+
+      // ===== 属性面板实时更新 =====
+      $('#prop-node-name').on('input', function() {
+        var selectedNode = $('.canvas-node').filter(function() {
+          return $(this).css('border-color') === 'rgb(13, 148, 136)';
+        });
+        if (selectedNode.length > 0) {
+          selectedNode.find('span.text-sm.font-semibold').text($(this).val());
+        }
+      });
+
+      // ===== 流程名称编辑 =====
+      $('#flow-name-input').on('blur', function() {
+        console.log('流程名称已更新为:', $(this).val());
+      });
+
+      // ===== 版本标签点击 =====
+      $('#flow-footer').on('click', '.cursor-pointer', function() {
+        var version = $(this).text().trim();
+        console.log('切换到版本:', version);
+        alert('已切换到版本 ' + version + '（只读模式）');
+      });
+
+      // 默认选中第一个审批节点
+      setTimeout(function() {
+        $('#canvas-node-approval-1').trigger('click');
+      }, 300);
+
+    });
+  </script>
+</body>
+
+</html>

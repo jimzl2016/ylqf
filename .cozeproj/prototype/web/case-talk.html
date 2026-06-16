@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件，不需要的页面则不要复制此段（从 @nav:start 到 @nav:end） -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件，不需要的页面则不要复制此段 -->
+    <!-- @main-content:start -->
+
+      <!-- 页面标题 -->
+      <div class="px-6 pt-6 pb-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">谈话函询</h1>
+            <p class="text-sm text-on-surface-variant mt-1">案件流程 · 第三阶段：对线索涉及人员进行谈话或函询了解情况</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-on-surface-variant bg-surface-container px-2.5 py-1 rounded-md">案件编号：YW-2024-0038</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8阶段流程步骤导航 -->
+      <div class="px-6 pb-6">
+        <div class="bg-surface rounded-xl shadow-card p-5">
+          <div class="flex items-center justify-between relative">
+            <!-- 连接线背景 -->
+            <div class="absolute top-4 left-[calc(6.25%+12px)] right-[calc(6.25%+12px)] h-0.5 bg-surface-container-high" style="z-index:0;"></div>
+            <!-- 已完成连接线 -->
+            <div class="absolute top-4 left-[calc(6.25%+12px)] h-0.5 bg-primary" style="width:calc(31.25% - 12px); z-index:1;"></div>
+
+            <!-- 阶段1：信访举报 - 已完成 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-report.html" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center transition-colors hover:opacity-80" title="信访举报 - 已完成">
+                <i data-lucide="check" class="w-4 h-4 text-on-primary"></i>
+              </a>
+              <span class="text-[11px] font-medium text-primary text-center leading-tight">信访举报</span>
+            </div>
+
+            <!-- 阶段2：线索处置 - 已完成 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-clue.html" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center transition-colors hover:opacity-80" title="线索处置 - 已完成">
+                <i data-lucide="check" class="w-4 h-4 text-on-primary"></i>
+              </a>
+              <span class="text-[11px] font-medium text-primary text-center leading-tight">线索处置</span>
+            </div>
+
+            <!-- 阶段3：谈话函询 - 当前 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ring-4 ring-primary/20">
+                <span class="text-xs font-bold text-on-primary">3</span>
+              </div>
+              <span class="text-[11px] font-semibold text-primary text-center leading-tight">谈话函询</span>
+            </div>
+
+            <!-- 阶段4：初步核实 - 待处理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-verify.html" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center transition-colors hover:bg-surface-container-highest" title="初步核实 - 待处理">
+                <span class="text-xs font-medium text-on-surface-variant">4</span>
+              </a>
+              <span class="text-[11px] font-medium text-on-surface-variant text-center leading-tight">初步核实</span>
+            </div>
+
+            <!-- 阶段5：立案审查 - 待处理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-review.html" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center transition-colors hover:bg-surface-container-highest" title="立案审查 - 待处理">
+                <span class="text-xs font-medium text-on-surface-variant">5</span>
+              </a>
+              <span class="text-[11px] font-medium text-on-surface-variant text-center leading-tight">立案审查</span>
+            </div>
+
+            <!-- 阶段6：案件审理 - 待处理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-trial.html" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center transition-colors hover:bg-surface-container-highest" title="案件审理 - 待处理">
+                <span class="text-xs font-medium text-on-surface-variant">6</span>
+              </a>
+              <span class="text-[11px] font-medium text-on-surface-variant text-center leading-tight">案件审理</span>
+            </div>
+
+            <!-- 阶段7：复议复查 - 待处理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-recheck.html" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center transition-colors hover:bg-surface-container-highest" title="复议复查 - 待处理">
+                <span class="text-xs font-medium text-on-surface-variant">7</span>
+              </a>
+              <span class="text-[11px] font-medium text-on-surface-variant text-center leading-tight">复议复查</span>
+            </div>
+
+            <!-- 阶段8：以案促改 - 待处理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10" style="width:12.5%;">
+              <a href="case-reform.html" class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center transition-colors hover:bg-surface-container-highest" title="以案促改 - 待处理">
+                <span class="text-xs font-medium text-on-surface-variant">8</span>
+              </a>
+              <span class="text-[11px] font-medium text-on-surface-variant text-center leading-tight">以案促改</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 案件基本信息卡片 -->
+      <div class="px-6 pb-6">
+        <div class="bg-surface rounded-xl shadow-card p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="info" class="w-4 h-4 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">案件基本信息</h2>
+          </div>
+          <div class="grid grid-cols-4 gap-x-8 gap-y-3">
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">案件编号</span>
+              <span class="text-sm font-medium text-on-surface">YW-2024-0038</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">案件名称</span>
+              <span class="text-sm font-medium text-on-surface">张某涉嫌违反廉洁纪律案</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">被反映人</span>
+              <span class="text-sm font-medium text-on-surface">张**</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">承办部门</span>
+              <span class="text-sm font-medium text-on-surface">第二监督检查室</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">承办人</span>
+              <span class="text-sm font-medium text-on-surface">李**、王**</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">线索来源</span>
+              <span class="text-sm font-medium text-on-surface">群众举报</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">当前阶段</span>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary w-fit">谈话函询</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">立案时间</span>
+              <span class="text-sm font-medium text-on-surface">2024-10-15</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 函询登记表单 -->
+      <div class="px-6 pb-6">
+        <div class="bg-surface rounded-xl shadow-card p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="file-plus" class="w-4 h-4 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">函询登记</h2>
+          </div>
+          <form id="form-talk-register" class="space-y-4">
+            <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+              <!-- 函询对象 -->
+              <div class="flex flex-col gap-1.5">
+                <label for="talk-target" class="text-xs font-medium text-on-surface-variant">函询对象 <span class="text-error">*</span></label>
+                <input id="talk-target" type="text" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入函询对象姓名"/>
+              </div>
+              <!-- 函询类型 -->
+              <div class="flex flex-col gap-1.5">
+                <label for="talk-type" class="text-xs font-medium text-on-surface-variant">函询类型 <span class="text-error">*</span></label>
+                <div class="relative">
+                  <select id="talk-type" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer pr-8">
+                    <option value="" disabled selected>请选择函询类型</option>
+                    <option value="talk">谈话</option>
+                    <option value="letter">函询</option>
+                    <option value="both">谈话+函询</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none"></i>
+                </div>
+                </select>
+              </div>
+              <!-- 函询内容 -->
+              <div class="col-span-2 flex flex-col gap-1.5">
+                <label for="talk-content" class="text-xs font-medium text-on-surface-variant">函询内容 <span class="text-error">*</span></label>
+                <textarea id="talk-content" rows="3" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" placeholder="请输入函询内容，包括需要说明的问题、涉及事项等"></textarea>
+              </div>
+              <!-- 发函时间 -->
+              <div class="flex flex-col gap-1.5">
+                <label for="talk-send-date" class="text-xs font-medium text-on-surface-variant">发函时间 <span class="text-error">*</span></label>
+                <input id="talk-send-date" type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              </div>
+              <!-- 要求回复时间 -->
+              <div class="flex flex-col gap-1.5">
+                <label for="talk-reply-deadline" class="text-xs font-medium text-on-surface-variant">要求回复时间 <span class="text-error">*</span></label>
+                <input id="talk-reply-deadline" type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 pt-2">
+              <button type="button" id="btn-talk-submit" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>提交登记
+              </button>
+              <button type="button" id="btn-talk-reset" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>重置
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- 函询列表 -->
+      <div class="px-6 pb-6">
+        <div class="bg-surface rounded-xl shadow-card overflow-hidden">
+          <!-- 列表标题栏 -->
+          <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/10">
+            <div class="flex items-center gap-2">
+              <i data-lucide="list" class="w-4 h-4 text-primary"></i>
+              <h2 class="text-base font-semibold text-on-surface">函询记录列表</h2>
+              <span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">共 5 条</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <!-- 搜索框 -->
+              <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-on-surface-variant/50"></i>
+                <input id="input-search-talk" type="text" class="w-56 bg-surface-container border-none rounded-md pl-9 pr-3 py-1.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="搜索函询编号或对象..."/>
+              </div>
+              <!-- 状态筛选 -->
+              <div class="relative">
+                <select id="select-talk-status" class="bg-surface-container border-none rounded-md px-3 py-1.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer pr-8">
+                  <option value="">全部状态</option>
+                  <option value="pending">待回复</option>
+                  <option value="replied">已回复</option>
+                  <option value="overdue">逾期未回</option>
+                  <option value="transferred">已转初核</option>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-on-surface-variant pointer-events-none"></i>
+              </div>
+          </div>
+
+          <!-- 表格 -->
+          <div class="overflow-x-auto">
+            <!-- 表头 -->
+            <div class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide min-w-[960px]">
+              <span>函询编号</span>
+              <span>函询对象</span>
+              <span>函询类型</span>
+              <span>发函时间</span>
+              <span>要求回复时间</span>
+              <span>实际回复时间</span>
+              <span>状态</span>
+              <span>操作</span>
+            </div>
+
+            <!-- 列表数据行 -->
+            <div class="divide-y divide-outline-variant/10">
+
+              <!-- 列表-函询记录1 -->
+              <div id="talk-row-1" class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center min-w-[960px]">
+                <span class="text-sm font-medium text-on-surface">HX-2024-0012</span>
+                <span class="text-sm text-on-surface">张**</span>
+                <span class="text-sm text-on-surface-variant">谈话</span>
+                <span class="text-sm text-on-surface-variant">2024-10-18</span>
+                <span class="text-sm text-on-surface-variant">2024-10-25</span>
+                <span class="text-sm text-on-surface-variant">2024-10-23</span>
+                <span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已回复</span>
+                </span>
+                <div class="flex items-center gap-2">
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-detail" data-id="HX-2024-0012">查看</button>
+                  <button class="text-on-surface-variant text-sm font-medium hover:text-on-surface hover:underline btn-talk-edit" data-id="HX-2024-0012">编辑</button>
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-transfer" data-id="HX-2024-0012">转初核</button>
+                </div>
+              </div>
+
+              <!-- 列表-函询记录2 -->
+              <div id="talk-row-2" class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center min-w-[960px]">
+                <span class="text-sm font-medium text-on-surface">HX-2024-0013</span>
+                <span class="text-sm text-on-surface">李**</span>
+                <span class="text-sm text-on-surface-variant">函询</span>
+                <span class="text-sm text-on-surface-variant">2024-10-20</span>
+                <span class="text-sm text-on-surface-variant">2024-11-03</span>
+                <span class="text-sm text-on-surface-variant">--</span>
+                <span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">待回复</span>
+                </span>
+                <div class="flex items-center gap-2">
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-detail" data-id="HX-2024-0013">查看</button>
+                  <button class="text-on-surface-variant text-sm font-medium hover:text-on-surface hover:underline btn-talk-edit" data-id="HX-2024-0013">编辑</button>
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-transfer" data-id="HX-2024-0013">转初核</button>
+                </div>
+              </div>
+
+              <!-- 列表-函询记录3 -->
+              <div id="talk-row-3" class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center min-w-[960px]">
+                <span class="text-sm font-medium text-on-surface">HX-2024-0014</span>
+                <span class="text-sm text-on-surface">王**</span>
+                <span class="text-sm text-on-surface-variant">谈话+函询</span>
+                <span class="text-sm text-on-surface-variant">2024-10-22</span>
+                <span class="text-sm text-on-surface-variant">2024-11-05</span>
+                <span class="text-sm text-on-surface-variant">2024-10-29</span>
+                <span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已回复</span>
+                </span>
+                <div class="flex items-center gap-2">
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-detail" data-id="HX-2024-0014">查看</button>
+                  <button class="text-on-surface-variant text-sm font-medium hover:text-on-surface hover:underline btn-talk-edit" data-id="HX-2024-0014">编辑</button>
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-transfer" data-id="HX-2024-0014">转初核</button>
+                </div>
+              </div>
+
+              <!-- 列表-函询记录4 -->
+              <div id="talk-row-4" class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center min-w-[960px]">
+                <span class="text-sm font-medium text-on-surface">HX-2024-0015</span>
+                <span class="text-sm text-on-surface">赵**</span>
+                <span class="text-sm text-on-surface-variant">谈话</span>
+                <span class="text-sm text-on-surface-variant">2024-10-25</span>
+                <span class="text-sm text-on-surface-variant">2024-11-08</span>
+                <span class="text-sm text-on-surface-variant">--</span>
+                <span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">逾期未回</span>
+                </span>
+                <div class="flex items-center gap-2">
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-detail" data-id="HX-2024-0015">查看</button>
+                  <button class="text-on-surface-variant text-sm font-medium hover:text-on-surface hover:underline btn-talk-edit" data-id="HX-2024-0015">编辑</button>
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-transfer" data-id="HX-2024-0015">转初核</button>
+                </div>
+              </div>
+
+              <!-- 列表-函询记录5 -->
+              <div id="talk-row-5" class="grid grid-cols-[1fr_1fr_0.8fr_1fr_1fr_1fr_0.8fr_1.2fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center min-w-[960px]">
+                <span class="text-sm font-medium text-on-surface">HX-2024-0016</span>
+                <span class="text-sm text-on-surface">刘**</span>
+                <span class="text-sm text-on-surface-variant">函询</span>
+                <span class="text-sm text-on-surface-variant">2024-10-28</span>
+                <span class="text-sm text-on-surface-variant">2024-11-11</span>
+                <span class="text-sm text-on-surface-variant">2024-11-05</span>
+                <span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary">已转初核</span>
+                </span>
+                <div class="flex items-center gap-2">
+                  <button class="text-primary text-sm font-medium hover:underline btn-talk-detail" data-id="HX-2024-0016">查看</button>
+                  <button class="text-on-surface-variant text-sm font-medium hover:text-on-surface hover:underline btn-talk-edit" data-id="HX-2024-0016">编辑</button>
+                  <button class="text-on-surface-variant/40 text-sm font-medium cursor-not-allowed" disabled>已转初核</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="flex items-center justify-between px-5 py-3 border-t border-outline-variant/10">
+            <span class="text-xs text-on-surface-variant">显示 1-5 条，共 5 条记录</span>
+            <div class="flex items-center gap-1">
+              <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container transition-colors disabled:opacity-40" disabled>
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded-md bg-primary text-on-primary text-sm font-medium">1</button>
+              <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container transition-colors disabled:opacity-40" disabled>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 转初核确认弹窗（默认隐藏） -->
+      <div id="modal-transfer" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-md w-full max-h-[90vh] overflow-y-auto p-6">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-full bg-warning/15 flex items-center justify-center shrink-0">
+              <i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-on-surface">确认流转至初步核实</h3>
+              <p class="text-xs text-on-surface-variant mt-0.5">该操作将把当前函询记录流转至下一阶段</p>
+            </div>
+          </div>
+
+          <div class="bg-surface-container rounded-lg p-4 mb-5 space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-on-surface-variant">函询编号</span>
+              <span id="modal-transfer-code" class="font-medium text-on-surface">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-on-surface-variant">函询对象</span>
+              <span id="modal-transfer-target" class="font-medium text-on-surface">--</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-on-surface-variant">当前阶段</span>
+              <span class="text-primary font-medium">谈话函询</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-on-surface-variant">目标阶段</span>
+              <span class="text-primary font-medium">初步核实</span>
+            </div>
+          </div>
+
+          <!-- 流转意见 -->
+          <div class="flex flex-col gap-1.5 mb-5">
+            <label for="modal-transfer-opinion" class="text-xs font-medium text-on-surface-variant">流转意见</label>
+            <textarea id="modal-transfer-opinion" rows="3" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" placeholder="请输入流转意见（选填）"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 justify-end">
+            <button id="btn-transfer-cancel" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">取消</button>
+            <button id="btn-transfer-confirm" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>确认流转
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 函询详情弹窗（默认隐藏） -->
+      <div id="modal-detail" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-lg w-full max-h-[90vh] overflow-y-auto p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-base font-semibold text-on-surface">函询详情</h3>
+            <button id="btn-detail-close" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-container transition-colors">
+              <i data-lucide="x" class="w-4 h-4 text-on-surface-variant"></i>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">函询编号</span>
+                <span id="detail-code" class="text-sm font-medium text-on-surface">HX-2024-0012</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">函询类型</span>
+                <span id="detail-type" class="text-sm font-medium text-on-surface">谈话</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">函询对象</span>
+                <span id="detail-target" class="text-sm font-medium text-on-surface">张**</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">对象单位</span>
+                <span id="detail-unit" class="text-sm font-medium text-on-surface">XX局办公室</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">发函时间</span>
+                <span id="detail-send-date" class="text-sm font-medium text-on-surface">2024-10-18</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">要求回复时间</span>
+                <span id="detail-deadline" class="text-sm font-medium text-on-surface">2024-10-25</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">实际回复时间</span>
+                <span id="detail-reply-date" class="text-sm font-medium text-on-surface">2024-10-23</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-on-surface-variant">状态</span>
+                <span id="detail-status" class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success w-fit">已回复</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">函询内容</span>
+              <p id="detail-content" class="text-sm text-on-surface bg-surface-container rounded-md p-3">请就群众反映的违规收受礼品礼金问题作出说明，并提供相关证明材料。</p>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-on-surface-variant">回复内容</span>
+              <p id="detail-reply" class="text-sm text-on-surface bg-surface-container rounded-md p-3">本人已就相关问题进行书面说明，承认在2024年春节期间收受管理服务对象赠送的购物卡2张，面值共计2000元，已主动上交。</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 justify-end mt-6 pt-4 border-t border-outline-variant/10">
+            <button id="btn-detail-transfer" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>转初核
+            </button>
+            <button id="btn-detail-close-bottom" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">关闭</button>
+          </div>
+        </div>
+      </div>
+
+    <!-- @main-content:end -->
+    </main>
+  </div>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+    $(function() {
+
+      // ========== 函询登记表单 - 提交 ==========
+      $('#btn-talk-submit').on('click', function() {
+        var target = $('#talk-target').val().trim();
+        var type = $('#talk-type').val();
+        var content = $('#talk-content').val().trim();
+        var sendDate = $('#talk-send-date').val();
+        var deadline = $('#talk-reply-deadline').val();
+
+        // 简单校验
+        if (!target) { alert('请输入函询对象'); return; }
+        if (!type) { alert('请选择函询类型'); return; }
+        if (!content) { alert('请输入函询内容'); return; }
+        if (!sendDate) { alert('请选择发函时间'); return; }
+        if (!deadline) { alert('请选择要求回复时间'); return; }
+
+        alert('函询登记提交成功！\n函询对象：' + target + '\n函询类型：' + type);
+        // 实际项目中应发送 AJAX 请求，成功后刷新列表
+      });
+
+      // ========== 函询登记表单 - 重置 ==========
+      $('#btn-talk-reset').on('click', function() {
+        $('#form-talk-register')[0].reset();
+      });
+
+      // ========== 函询列表 - 查看详情 ==========
+      $('.btn-talk-detail').on('click', function() {
+        var id = $(this).data('id');
+        // 根据函询编号填充详情弹窗内容（硬编码映射）
+        var detailMap = {
+          'HX-2024-0012': {
+            code: 'HX-2024-0012', type: '谈话', target: '张**', unit: 'XX局办公室',
+            sendDate: '2024-10-18', deadline: '2024-10-25', replyDate: '2024-10-23',
+            statusHtml: '<span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已回复</span>',
+            content: '请就群众反映的违规收受礼品礼金问题作出说明，并提供相关证明材料。',
+            reply: '本人已就相关问题进行书面说明，承认在2024年春节期间收受管理服务对象赠送的购物卡2张，面值共计2000元，已主动上交。'
+          },
+          'HX-2024-0013': {
+            code: 'HX-2024-0013', type: '函询', target: '李**', unit: 'XX中心综合科',
+            sendDate: '2024-10-20', deadline: '2024-11-03', replyDate: '--',
+            statusHtml: '<span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">待回复</span>',
+            content: '请就2024年第三季度公务接待费用异常偏高问题作出书面说明。',
+            reply: '--'
+          },
+          'HX-2024-0014': {
+            code: 'HX-2024-0014', type: '谈话+函询', target: '王**', unit: 'XX处管理科',
+            sendDate: '2024-10-22', deadline: '2024-11-05', replyDate: '2024-10-29',
+            statusHtml: '<span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已回复</span>',
+            content: '请就违规操办婚丧喜庆事宜问题进行谈话说明，并提交书面函询回复材料。',
+            reply: '经谈话了解，当事人承认在2024年9月为其子操办婚宴时，超出报备范围邀请管理服务对象参加并收受礼金，已退还相关礼金。'
+          },
+          'HX-2024-0015': {
+            code: 'HX-2024-0015', type: '谈话', target: '赵**', unit: 'XX支队',
+            sendDate: '2024-10-25', deadline: '2024-11-08', replyDate: '--',
+            statusHtml: '<span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">逾期未回</span>',
+            content: '请就群众举报的公车私用问题到第二监督检查室接受谈话。',
+            reply: '--'
+          },
+          'HX-2024-0016': {
+            code: 'HX-2024-0016', type: '函询', target: '刘**', unit: 'XX局财务科',
+            sendDate: '2024-10-28', deadline: '2024-11-11', replyDate: '2024-11-05',
+            statusHtml: '<span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary">已转初核</span>',
+            content: '请就涉嫌虚列支出套取财政资金问题作出书面说明，并附相关账目凭证。',
+            reply: '已提交书面说明及相关账目复印件，否认虚列支出行为，称系正常办公经费支出。经初步审核，其说明与账目存在多处不一致。'
+          }
+        };
+
+        var d = detailMap[id] || detailMap['HX-2024-0012'];
+        $('#detail-code').text(d.code);
+        $('#detail-type').text(d.type);
+        $('#detail-target').text(d.target);
+        $('#detail-unit').text(d.unit);
+        $('#detail-send-date').text(d.sendDate);
+        $('#detail-deadline').text(d.deadline);
+        $('#detail-reply-date').text(d.replyDate);
+        $('#detail-status').html(d.statusHtml);
+        $('#detail-content').text(d.content);
+        $('#detail-reply').text(d.reply);
+
+        // 存储当前查看的函询编号，供弹窗内"转初核"按钮使用
+        $('#btn-detail-transfer').data('id', d.code);
+
+        $('#modal-detail').removeClass('hidden');
+      });
+
+      // ========== 详情弹窗 - 关闭 ==========
+      $('#btn-detail-close, #btn-detail-close-bottom').on('click', function() {
+        $('#modal-detail').addClass('hidden');
+      });
+
+      // ========== 详情弹窗内 - 转初核 ==========
+      $('#btn-detail-transfer').on('click', function() {
+        var id = $(this).data('id');
+        $('#modal-detail').addClass('hidden');
+        // 打开转初核弹窗并填充信息
+        openTransferModal(id);
+      });
+
+      // ========== 列表 - 编辑按钮 ==========
+      // 编辑按钮 - 点击后应实现内联编辑：
+      // 1. 将当前行的函询对象、类型、内容等字段替换为可编辑的 input/select/textarea
+      // 2. 在行末显示"保存"和"取消"按钮
+      // 3. 保存后通过 AJAX 提交修改，成功后刷新行数据
+      // 4. 取消后恢复原始展示状态
+      $('.btn-talk-edit').on('click', function() {
+        var id = $(this).data('id');
+        console.log('编辑函询记录:', id);
+        alert('编辑功能 - 函询编号：' + id + '\n（原型中仅演示入口，完整编辑逻辑待实现）');
+      });
+
+      // ========== 列表 - 转初核按钮 ==========
+      $('.btn-talk-transfer').on('click', function() {
+        var id = $(this).data('id');
+        openTransferModal(id);
+      });
+
+      // ========== 转初核弹窗 - 打开并填充 ==========
+      function openTransferModal(id) {
+        // 根据函询编号查找对应行数据
+        var rowMap = {
+          'HX-2024-0012': { code: 'HX-2024-0012', target: '张**' },
+          'HX-2024-0013': { code: 'HX-2024-0013', target: '李**' },
+          'HX-2024-0014': { code: 'HX-2024-0014', target: '王**' },
+          'HX-2024-0015': { code: 'HX-2024-0015', target: '赵**' },
+          'HX-2024-0016': { code: 'HX-2024-0016', target: '刘**' }
+        };
+        var info = rowMap[id] || { code: id, target: '--' };
+        $('#modal-transfer-code').text(info.code);
+        $('#modal-transfer-target').text(info.target);
+        $('#modal-transfer-opinion').val('');
+        $('#btn-transfer-confirm').data('id', info.code);
+        $('#modal-transfer').removeClass('hidden');
+      }
+
+      // ========== 转初核弹窗 - 取消 ==========
+      $('#btn-transfer-cancel').on('click', function() {
+        $('#modal-transfer').addClass('hidden');
+      });
+
+      // ========== 转初核弹窗 - 确认流转 ==========
+      $('#btn-transfer-confirm').on('click', function() {
+        var id = $(this).data('id');
+        var opinion = $('#modal-transfer-opinion').val().trim();
+        console.log('流转至初步核实 - 函询编号:', id, '流转意见:', opinion);
+        alert('流转成功！\n函询编号：' + id + '\n已流转至"初步核实"阶段');
+        $('#modal-transfer').addClass('hidden');
+        // 实际项目中应发送 AJAX 请求，成功后跳转或刷新列表
+        // window.location.href = 'case-verify.html?case_id=YW-2024-0038&from_talk=' + id;
+      });
+
+      // ========== 点击弹窗遮罩关闭 ==========
+      $('#modal-transfer').on('click', function(e) {
+        if (e.target === this) {
+          $(this).addClass('hidden');
+        }
+      });
+      $('#modal-detail').on('click', function(e) {
+        if (e.target === this) {
+          $(this).addClass('hidden');
+        }
+      });
+
+      // ========== 搜索框 - 实时筛选 ==========
+      // 搜索框输入时筛选函询列表：
+      // 1. 监听 input 事件，获取搜索关键词
+      // 2. 遍历所有函询行，匹配函询编号或函询对象
+      // 3. 匹配成功的行 show()，不匹配的 hide()
+      $('#input-search-talk').on('input', function() {
+        var keyword = $(this).val().trim().toLowerCase();
+        $('[id^="talk-row-"]').each(function() {
+          var code = $(this).find('span:first').text().toLowerCase();
+          var target = $(this).find('span').eq(1).text().toLowerCase();
+          if (!keyword || code.indexOf(keyword) > -1 || target.indexOf(keyword) > -1) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+      // ========== 状态筛选 ==========
+      // 状态下拉框切换时筛选列表：
+      // 1. 获取选中的状态值
+      // 2. 遍历所有函询行，匹配状态文本
+      // 3. 匹配成功的行 show()，不匹配的 hide()
+      // 4. 选择"全部状态"时显示所有行
+      $('#select-talk-status').on('change', function() {
+        var status = $(this).val();
+        $('[id^="talk-row-"]').each(function() {
+          if (!status) {
+            $(this).show();
+            return;
+          }
+          var statusText = $(this).find('[class*="bg-"][class*="/15"]').text().trim();
+          var statusMap = {
+            'pending': '待回复',
+            'replied': '已回复',
+            'overdue': '逾期未回',
+            'transferred': '已转初核'
+          };
+          if (statusText === statusMap[status]) {
+            $(this).show();
+          } else {
+            $(this).hide();
+          }
+        });
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

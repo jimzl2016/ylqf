@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+      <div class="p-6 space-y-6">
+
+        <!-- 页面标题区 -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">AI 分析报告</h1>
+            <p class="text-sm text-on-surface-variant mt-1">系统自动生成廉政分析报告，支持多维度数据洞察与导出</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="btn-export-pdf" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>导出 PDF
+            </button>
+            <button id="btn-export-word" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="file-down" class="w-3.5 h-3.5"></i>导出 Word
+            </button>
+            <button id="btn-print" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>打印
+            </button>
+            <button id="btn-generate" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>生成新报告
+            </button>
+          </div>
+        </div>
+
+        <!-- 报告筛选区 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center gap-6 flex-wrap">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-on-surface whitespace-nowrap">报告类型</span>
+              <div class="flex bg-surface-container rounded-md p-0.5" id="report-type-tabs">
+                <button class="px-3 py-1.5 rounded text-xs font-medium bg-surface text-on-surface shadow-sm transition-all" data-type="monthly">月度报告</button>
+                <button class="px-3 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface transition-all" data-type="quarterly">季度报告</button>
+                <button class="px-3 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface transition-all" data-type="yearly">年度报告</button>
+                <button class="px-3 py-1.5 rounded text-xs font-medium text-on-surface-variant hover:text-on-surface transition-all" data-type="special">专项报告</button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-on-surface whitespace-nowrap">时间范围</span>
+              <select id="select-year" class="bg-surface-container border-none rounded-md px-3 py-1.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option value="2025">2025 年</option>
+                <option value="2024">2024 年</option>
+                <option value="2023">2023 年</option>
+              </select>
+              <select id="select-month" class="bg-surface-container border-none rounded-md px-3 py-1.5 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                <option value="6">6 月</option>
+                <option value="5">5 月</option>
+                <option value="4">4 月</option>
+                <option value="3">3 月</option>
+                <option value="2">2 月</option>
+                <option value="1">1 月</option>
+              </select>
+            </div>
+            <button id="btn-query" class="bg-primary text-on-primary px-4 py-1.5 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="search" class="w-3.5 h-3.5"></i>查询
+            </button>
+          </div>
+        </div>
+
+        <!-- 报告内容区：双栏布局 -->
+        <div class="grid grid-cols-3 gap-6">
+          <!-- 左侧：报告正文（占 2/3） -->
+          <div class="col-span-2 space-y-6">
+
+            <!-- 报告标题卡片 -->
+            <div id="report-content" class="bg-surface rounded-lg shadow-card p-6 space-y-6">
+
+              <!-- 报告头部 -->
+              <div class="border-b border-outline-variant/20 pb-5">
+                <div class="flex items-center gap-2 text-sm text-on-surface-variant mb-2">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                  <span>报告周期：2025年6月</span>
+                  <span class="mx-2">|</span>
+                  <span>生成时间：2025-06-30 08:30</span>
+                  <span class="mx-2">|</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">AI 自动生成</span>
+                </div>
+                <h2 class="text-xl font-bold text-on-surface">艺旅清风 · 廉政风险月度分析报告</h2>
+                <p class="text-sm text-on-surface-variant mt-1">报告编号：RPT-2025-06-001 | 数据截止：2025年6月30日</p>
+              </div>
+
+              <!-- 一、报告摘要 -->
+              <section id="section-summary">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>一、报告摘要
+                </h3>
+                <p class="text-sm text-on-surface leading-relaxed bg-surface-container rounded-md p-4">
+                  2025年6月，系统共监测廉政风险数据 <span class="font-semibold text-error">1,247</span> 条，较上月环比下降 <span class="font-semibold text-success">8.3%</span>。其中，高风险预警 <span class="font-semibold text-error">23</span> 条（较上月减少5条），中风险预警 <span class="font-semibold text-warning">89</span> 条，低风险预警 <span class="font-semibold">1,135</span> 条。本月重点关注领域为<span class="font-semibold">招投标采购</span>和<span class="font-semibold">财务报销</span>，建议加强相关环节的监督审查力度。人员方面，新纳入重点观察名单 3 人，解除观察 2 人，现有重点观察人员共 18 人。
+                </p>
+              </section>
+
+              <!-- 二、廉政风险总体评估 -->
+              <section id="section-assessment">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>二、廉政风险总体评估
+                </h3>
+                <div class="grid grid-cols-4 gap-4">
+                  <!-- 评估卡片-高风险 -->
+                  <div class="bg-error/5 rounded-lg p-4 text-center border border-error/10">
+                    <p class="text-2xl font-bold text-error">23</p>
+                    <p class="text-xs text-on-surface-variant mt-1">高风险预警</p>
+                    <p class="text-xs text-success mt-0.5">↓ 17.9%</p>
+                  </div>
+                  <!-- 评估卡片-中风险 -->
+                  <div class="bg-warning/5 rounded-lg p-4 text-center border border-warning/10">
+                    <p class="text-2xl font-bold text-warning">89</p>
+                    <p class="text-xs text-on-surface-variant mt-1">中风险预警</p>
+                    <p class="text-xs text-success mt-0.5">↓ 5.3%</p>
+                  </div>
+                  <!-- 评估卡片-低风险 -->
+                  <div class="bg-primary/5 rounded-lg p-4 text-center border border-primary/10">
+                    <p class="text-2xl font-bold text-primary">1,135</p>
+                    <p class="text-xs text-on-surface-variant mt-1">低风险预警</p>
+                    <p class="text-xs text-success mt-0.5">↓ 8.1%</p>
+                  </div>
+                  <!-- 评估卡片-综合指数 -->
+                  <div class="bg-surface-container rounded-lg p-4 text-center">
+                    <p class="text-2xl font-bold text-on-surface">72.6</p>
+                    <p class="text-xs text-on-surface-variant mt-1">廉政健康指数</p>
+                    <p class="text-xs text-success mt-0.5">↑ 3.2 分</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-surface-container rounded-md p-4">
+                  <p class="text-sm text-on-surface leading-relaxed">
+                    <span class="font-semibold">综合评估结论：</span>本月廉政风险整体呈下降趋势，廉政健康指数连续三个月回升。招投标领域风险占比仍居首位（31.2%），需持续关注。建议在第三季度开展招投标专项检查，巩固当前向好态势。
+                  </p>
+                </div>
+              </section>
+
+              <!-- 三、各部门风险排名 -->
+              <section id="section-dept-ranking">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>三、各部门风险排名
+                </h3>
+                <div class="bg-surface-container rounded-lg overflow-hidden">
+                  <div class="grid grid-cols-12 px-4 py-2.5 bg-surface-container-high text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+                    <span class="col-span-1">排名</span>
+                    <span class="col-span-4">部门</span>
+                    <span class="col-span-2 text-center">风险指数</span>
+                    <span class="col-span-2 text-center">预警数量</span>
+                    <span class="col-span-3 text-center">趋势</span>
+                  </div>
+                  <div class="divide-y divide-outline-variant/20">
+                    <!-- 排名-1 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-1 text-sm font-bold text-error">1</span>
+                      <span class="col-span-4 text-sm font-medium text-on-surface">工程建设部</span>
+                      <span class="col-span-2 text-sm font-semibold text-error text-center">86.5</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">312</span>
+                      <span class="col-span-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">↑ 上升</span></span>
+                    </div>
+                    <!-- 排名-2 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-1 text-sm font-bold text-warning">2</span>
+                      <span class="col-span-4 text-sm font-medium text-on-surface">物资采购部</span>
+                      <span class="col-span-2 text-sm font-semibold text-warning text-center">74.2</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">258</span>
+                      <span class="col-span-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">→ 持平</span></span>
+                    </div>
+                    <!-- 排名-3 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-1 text-sm font-bold text-warning">3</span>
+                      <span class="col-span-4 text-sm font-medium text-on-surface">财务管理部</span>
+                      <span class="col-span-2 text-sm font-semibold text-warning text-center">68.9</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">203</span>
+                      <span class="col-span-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">↓ 下降</span></span>
+                    </div>
+                    <!-- 排名-4 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-1 text-sm font-medium text-on-surface-variant">4</span>
+                      <span class="col-span-4 text-sm font-medium text-on-surface">后勤保障部</span>
+                      <span class="col-span-2 text-sm font-semibold text-on-surface text-center">52.3</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">167</span>
+                      <span class="col-span-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">↓ 下降</span></span>
+                    </div>
+                    <!-- 排名-5 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-1 text-sm font-medium text-on-surface-variant">5</span>
+                      <span class="col-span-4 text-sm font-medium text-on-surface">人力资源部</span>
+                      <span class="col-span-2 text-sm font-semibold text-on-surface text-center">41.7</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">98</span>
+                      <span class="col-span-3 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">↓ 下降</span></span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 四、重点人员关注列表 -->
+              <section id="section-key-persons">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>四、重点人员关注列表
+                </h3>
+                <div class="bg-surface-container rounded-lg overflow-hidden">
+                  <div class="grid grid-cols-12 px-4 py-2.5 bg-surface-container-high text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+                    <span class="col-span-2">姓名</span>
+                    <span class="col-span-2">部门</span>
+                    <span class="col-span-2">职级</span>
+                    <span class="col-span-2 text-center">风险等级</span>
+                    <span class="col-span-2 text-center">关联预警</span>
+                    <span class="col-span-2 text-center">关注状态</span>
+                  </div>
+                  <div class="divide-y divide-outline-variant/20">
+                    <!-- 人员-1 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-2 text-sm font-medium text-on-surface">陈*强</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">工程建设部</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">副处长</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">高风险</span></span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">12 条</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">持续关注</span></span>
+                    </div>
+                    <!-- 人员-2 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-2 text-sm font-medium text-on-surface">刘*明</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">物资采购部</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">科长</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">高风险</span></span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">9 条</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/15 text-error">持续关注</span></span>
+                    </div>
+                    <!-- 人员-3 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-2 text-sm font-medium text-on-surface">王*华</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">财务管理部</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">副科长</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">中风险</span></span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">7 条</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">新增关注</span></span>
+                    </div>
+                    <!-- 人员-4 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-2 text-sm font-medium text-on-surface">赵*军</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">后勤保障部</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">主任科员</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">中风险</span></span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">5 条</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">新增关注</span></span>
+                    </div>
+                    <!-- 人员-5 -->
+                    <div class="grid grid-cols-12 px-4 py-3 items-center hover:bg-surface-container-high/50 transition-colors">
+                      <span class="col-span-2 text-sm font-medium text-on-surface">孙*丽</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">人力资源部</span>
+                      <span class="col-span-2 text-sm text-on-surface-variant">科员</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">中风险</span></span>
+                      <span class="col-span-2 text-sm text-on-surface-variant text-center">4 条</span>
+                      <span class="col-span-2 text-center"><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">观察中</span></span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 五、趋势分析 -->
+              <section id="section-trend">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>五、趋势分析
+                </h3>
+                <div class="space-y-4">
+                  <!-- 趋势图表占位区 -->
+                  <div class="bg-surface-container rounded-lg p-5">
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="text-sm font-semibold text-on-surface">近6个月风险预警趋势</span>
+                      <span class="text-xs text-on-surface-variant">单位：条</span>
+                    </div>
+                    <!-- 简易柱状图（CSS 模拟） -->
+                    <div class="flex items-end justify-between gap-2 h-40 px-2">
+                      <!-- 1月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-on-surface">1,480</span>
+                        <div class="w-full bg-primary/60 rounded-t-sm" style="height: 85%"></div>
+                        <span class="text-xs text-on-surface-variant">1月</span>
+                      </div>
+                      <!-- 2月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-on-surface">1,392</span>
+                        <div class="w-full bg-primary/60 rounded-t-sm" style="height: 78%"></div>
+                        <span class="text-xs text-on-surface-variant">2月</span>
+                      </div>
+                      <!-- 3月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-on-surface">1,410</span>
+                        <div class="w-full bg-primary/60 rounded-t-sm" style="height: 80%"></div>
+                        <span class="text-xs text-on-surface-variant">3月</span>
+                      </div>
+                      <!-- 4月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-on-surface">1,360</span>
+                        <div class="w-full bg-primary/60 rounded-t-sm" style="height: 76%"></div>
+                        <span class="text-xs text-on-surface-variant">4月</span>
+                      </div>
+                      <!-- 5月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-on-surface">1,360</span>
+                        <div class="w-full bg-primary/60 rounded-t-sm" style="height: 76%"></div>
+                        <span class="text-xs text-on-surface-variant">5月</span>
+                      </div>
+                      <!-- 6月 -->
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <span class="text-xs font-semibold text-primary">1,247</span>
+                        <div class="w-full bg-primary rounded-t-sm" style="height: 70%"></div>
+                        <span class="text-xs text-primary font-medium">6月</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 趋势分析文字 -->
+                  <div class="bg-surface-container rounded-md p-4">
+                    <p class="text-sm text-on-surface leading-relaxed">
+                      <span class="font-semibold">趋势解读：</span>近6个月风险预警总量呈持续下降趋势，从1月的1,480条降至6月的1,247条，累计降幅达15.7%。其中，高风险预警降幅最为显著（-37.8%），表明重点领域专项整治取得阶段性成效。但招投标采购类风险占比仍维持在30%以上，需持续关注。
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 六、AI 建议措施 -->
+              <section id="section-suggestions">
+                <h3 class="text-base font-semibold text-on-surface flex items-center gap-2 mb-3">
+                  <span class="w-1.5 h-5 rounded-full bg-primary inline-block"></span>六、AI 建议措施
+                </h3>
+                <div class="space-y-3">
+                  <!-- 建议-1 -->
+                  <div class="flex gap-3 bg-surface-container rounded-lg p-4">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <i data-lucide="lightbulb" class="w-4 h-4 text-primary"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">开展招投标专项审计</p>
+                      <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">建议在第三季度对工程建设部和物资采购部近一年所有招投标项目进行专项审计，重点关注围标串标、违规分包、超预算采购等风险点。建议引入第三方审计机构，确保审计独立性。</p>
+                    </div>
+                  </div>
+                  <!-- 建议-2 -->
+                  <div class="flex gap-3 bg-surface-container rounded-lg p-4">
+                    <div class="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <i data-lucide="alert-triangle" class="w-4 h-4 text-warning"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">加强重点人员日常监督</p>
+                      <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">对当前18名重点观察人员建立"一人一档"监督台账，落实定期谈话制度。建议每月至少开展一次廉政提醒谈话，对高风险人员（陈*强、刘*明）增加家访频次，及时掌握思想动态和家庭变化。</p>
+                    </div>
+                  </div>
+                  <!-- 建议-3 -->
+                  <div class="flex gap-3 bg-surface-container rounded-lg p-4">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <i data-lucide="shield" class="w-4 h-4 text-primary"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">完善财务报销审批流程</p>
+                      <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">针对财务管理部风险指数仍处于较高水平的情况，建议优化报销审批流程，引入智能审核规则引擎，对单笔金额超过5万元的报销自动触发二级复核。同时开展财务人员廉政教育培训，强化合规意识。</p>
+                    </div>
+                  </div>
+                  <!-- 建议-4 -->
+                  <div class="flex gap-3 bg-surface-container rounded-lg p-4">
+                    <div class="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <i data-lucide="trending-up" class="w-4 h-4 text-success"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">推广廉政风险预警模型应用</p>
+                      <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">基于当前积累的预警数据，建议在第四季度将AI预警模型推广至全部部门，实现风险早发现、早预警、早处置。同时建立预警响应闭环机制，确保每条预警有跟踪、有反馈、有整改。</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 报告底部 -->
+              <div class="border-t border-outline-variant/20 pt-4 text-xs text-on-surface-variant text-center">
+                本报告由艺旅清风智慧监督系统 AI 自动生成，仅供内部参考使用 | 生成时间：2025-06-30 08:30:15
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：历史报告列表（占 1/3） -->
+          <div class="col-span-1 space-y-4">
+            <div class="bg-surface rounded-lg shadow-card p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-semibold text-on-surface">历史报告</h3>
+                <span class="text-xs text-on-surface-variant">共 12 份</span>
+              </div>
+              <div class="space-y-2" id="history-report-list">
+                <!-- 历史报告-1 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="1">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年6月廉政风险月度报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">月度</span>
+                        <span class="text-xs text-on-surface-variant">2025-06-30</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-2 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="2">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年5月廉政风险月度报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">月度</span>
+                        <span class="text-xs text-on-surface-variant">2025-05-31</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-3 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="3">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年第二季度廉政风险分析报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning">季度</span>
+                        <span class="text-xs text-on-surface-variant">2025-06-30</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-4 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="4">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年4月廉政风险月度报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">月度</span>
+                        <span class="text-xs text-on-surface-variant">2025-04-30</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-5 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="5">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">招投标领域专项廉政分析报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error">专项</span>
+                        <span class="text-xs text-on-surface-variant">2025-04-15</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-6 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="6">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年3月廉政风险月度报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">月度</span>
+                        <span class="text-xs text-on-surface-variant">2025-03-31</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <!-- 历史报告-7 -->
+                <div class="bg-surface-container rounded-md p-3 hover:bg-surface-container-high transition-colors cursor-pointer" data-report-id="7">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface truncate">2025年第一季度廉政风险分析报告</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning">季度</span>
+                        <span class="text-xs text-on-surface-variant">2025-03-31</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0 ml-2">
+                      <button class="p-1 rounded text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" title="下载" data-action="download">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button id="btn-load-more" class="w-full mt-3 py-2 text-sm text-primary font-medium hover:bg-primary/5 rounded-md transition-colors">
+                查看更多报告
+              </button>
+            </div>
+
+            <!-- 快捷操作 -->
+            <div class="bg-surface rounded-lg shadow-card p-4">
+              <h3 class="text-base font-semibold text-on-surface mb-3">快捷操作</h3>
+              <div class="space-y-2">
+                <button id="btn-quick-monthly" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-md bg-surface-container hover:bg-surface-container-high transition-colors text-sm text-on-surface">
+                  <i data-lucide="calendar-check" class="w-4 h-4 text-primary"></i>
+                  <span>生成本月报告</span>
+                </button>
+                <button id="btn-quick-quarterly" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-md bg-surface-container hover:bg-surface-container-high transition-colors text-sm text-on-surface">
+                  <i data-lucide="calendar-range" class="w-4 h-4 text-primary"></i>
+                  <span>生成本季度报告</span>
+                </button>
+                <button id="btn-quick-special" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-md bg-surface-container hover:bg-surface-container-high transition-colors text-sm text-on-surface">
+                  <i data-lucide="file-search" class="w-4 h-4 text-primary"></i>
+                  <span>自定义专项报告</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- @main-content:end -->
+  </main>
+
+  <script>lucide.createIcons();</script>
+
+  <script>
+    $(function() {
+
+      // ========== 报告类型切换 ==========
+      $('#report-type-tabs').on('click', 'button', function() {
+        var $this = $(this);
+        var type = $this.data('type');
+
+        // 更新激活态
+        $('#report-type-tabs button').removeClass('bg-surface text-on-surface shadow-sm')
+          .addClass('text-on-surface-variant');
+        $this.addClass('bg-surface text-on-surface shadow-sm')
+          .removeClass('text-on-surface-variant');
+
+        // 根据类型切换时间选择器
+        if (type === 'yearly') {
+          $('#select-month').prop('disabled', true).addClass('opacity-50');
+        } else if (type === 'quarterly') {
+          $('#select-month').prop('disabled', false).removeClass('opacity-50');
+          // 季度报告月份选择器切换为季度选择
+          $('#select-month').html(
+            '<option value="Q2">第二季度</option>' +
+            '<option value="Q1">第一季度</option>' +
+            '<option value="Q4">第四季度</option>' +
+            '<option value="Q3">第三季度</option>'
+          );
+        } else {
+          $('#select-month').prop('disabled', false).removeClass('opacity-50');
+          // 恢复月份选择器
+          $('#select-month').html(
+            '<option value="6">6 月</option>' +
+            '<option value="5">5 月</option>' +
+            '<option value="4">4 月</option>' +
+            '<option value="3">3 月</option>' +
+            '<option value="2">2 月</option>' +
+            '<option value="1">1 月</option>'
+          );
+        }
+
+        console.log('切换报告类型:', type);
+      });
+
+      // ========== 查询按钮 ==========
+      $('#btn-query').on('click', function() {
+        var type = $('#report-type-tabs button.bg-surface').data('type');
+        var year = $('#select-year').val();
+        var month = $('#select-month').val();
+        console.log('查询报告 - 类型:', type, '年份:', year, '月份:', month);
+        // 实际项目中此处应发起 API 请求加载对应报告
+        alert('正在加载 ' + year + '年' + month + ' ' + type + ' 报告...');
+      });
+
+      // ========== 导出 PDF ==========
+      $('#btn-export-pdf').on('click', function() {
+        console.log('导出 PDF 报告');
+        // 实际项目中应调用后端接口生成 PDF 并触发下载
+        alert('正在生成 PDF 报告，请稍候...');
+      });
+
+      // ========== 导出 Word ==========
+      $('#btn-export-word').on('click', function() {
+        console.log('导出 Word 报告');
+        // 实际项目中应调用后端接口生成 Word 文档并触发下载
+        alert('正在生成 Word 报告，请稍候...');
+      });
+
+      // ========== 打印报告 ==========
+      $('#btn-print').on('click', function() {
+        console.log('打印报告');
+        window.print();
+      });
+
+      // ========== 生成新报告 ==========
+      $('#btn-generate').on('click', function() {
+        console.log('生成新报告');
+        // 实际项目中应弹出报告类型和时间范围选择弹窗，确认后调用 AI 生成接口
+        alert('正在启动 AI 报告生成，预计需要 2-3 分钟，请稍候...');
+      });
+
+      // ========== 历史报告点击查看 ==========
+      $('#history-report-list').on('click', '.bg-surface-container', function() {
+        var reportId = $(this).data('report-id');
+        var reportName = $(this).find('p').first().text();
+        console.log('查看历史报告:', reportId, reportName);
+        // 实际项目中应加载对应报告内容到左侧报告区
+        alert('正在加载报告：' + reportName);
+      });
+
+      // ========== 历史报告下载按钮 ==========
+      $('#history-report-list').on('click', '[data-action="download"]', function(e) {
+        e.stopPropagation();
+        var $report = $(this).closest('.bg-surface-container');
+        var reportName = $report.find('p').first().text();
+        console.log('下载历史报告:', reportName);
+        // 实际项目中应调用后端接口下载对应报告文件
+        alert('正在下载报告：' + reportName);
+      });
+
+      // ========== 加载更多历史报告 ==========
+      $('#btn-load-more').on('click', function() {
+        console.log('加载更多历史报告');
+        // 实际项目中应分页加载更多历史报告数据
+        alert('正在加载更多历史报告...');
+      });
+
+      // ========== 快捷操作 - 生成本月报告 ==========
+      $('#btn-quick-monthly').on('click', function() {
+        console.log('快捷操作：生成本月报告');
+        // 自动设置类型为月度，时间为当前月份，触发 AI 生成
+        alert('正在生成本月廉政风险分析报告...');
+      });
+
+      // ========== 快捷操作 - 生成本季度报告 ==========
+      $('#btn-quick-quarterly').on('click', function() {
+        console.log('快捷操作：生成本季度报告');
+        alert('正在生成本季度廉政风险分析报告...');
+      });
+
+      // ========== 快捷操作 - 自定义专项报告 ==========
+      $('#btn-quick-special').on('click', function() {
+        console.log('快捷操作：自定义专项报告');
+        // 实际项目中应弹出专项报告配置弹窗：
+        // 1. 选择报告主题（招投标/财务/人事等）
+        // 2. 选择时间范围
+        // 3. 选择分析维度
+        // 4. 确认后调用 AI 生成接口
+        alert('正在打开专项报告配置...');
+      });
+
+    });
+  </script>
+</body>
+
+</html>

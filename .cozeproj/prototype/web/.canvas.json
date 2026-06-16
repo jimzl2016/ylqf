@@ -1,0 +1,220 @@
+{
+  "elements": [
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/home.html"
+      },
+      "title": "廉政概览首页",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/archive-list.html"
+      },
+      "title": "档案列表",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/archive-create.html"
+      },
+      "title": "档案录入",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/archive-compare.html"
+      },
+      "title": "档案对比",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/archive-opinion.html"
+      },
+      "title": "意见管理",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/archive-recycle.html"
+      },
+      "title": "回收站",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ai-chat.html"
+      },
+      "title": "AI智能对话",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ai-alert.html"
+      },
+      "title": "AI预警分析",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ai-report.html"
+      },
+      "title": "AI分析报告",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-overview.html"
+      },
+      "title": "案件流程总览",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-report.html"
+      },
+      "title": "信访举报",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-clue.html"
+      },
+      "title": "线索处置",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-talk.html"
+      },
+      "title": "谈话函询",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-verify.html"
+      },
+      "title": "初步核实",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-review.html"
+      },
+      "title": "立案审查",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-trial.html"
+      },
+      "title": "案件审理",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-recheck.html"
+      },
+      "title": "复议复查",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/case-reform.html"
+      },
+      "title": "以案促改",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ledger-report.html"
+      },
+      "title": "信访台账",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ledger-clue.html"
+      },
+      "title": "线索台账",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ledger-dispose.html"
+      },
+      "title": "处置台账",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/ledger-punish.html"
+      },
+      "title": "处分台账",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/lowcode-form.html"
+      },
+      "title": "表单设计器",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/lowcode-list.html"
+      },
+      "title": "列表设计器",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/lowcode-flow.html"
+      },
+      "title": "流程设计器",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/lowcode-perm.html"
+      },
+      "title": "权限配置",
+      "size": "web"
+    },
+    {
+      "type": "html",
+      "options": {
+        "path": ".cozeproj/prototype/web/lowcode-version.html"
+      },
+      "title": "版本管理",
+      "size": "web"
+    }
+  ]
+}

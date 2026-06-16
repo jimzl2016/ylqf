@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件，不需要的页面则不要复制此段（从 @nav:start 到 @nav:end） -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium" aria-current="page">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件，不需要的页面则不要复制此段 -->
+    <!-- @main-content:start -->
+      <div class="p-6 space-y-8">
+
+        <!-- 页面标题 -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-on-surface">信访举报</h1>
+            <p class="text-sm text-on-surface-variant mt-1">案件流程第一阶段 · 受理登记信访举报信息</p>
+          </div>
+          <a href="case-overview.html" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium
+                     hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>返回流程总览
+          </a>
+        </div>
+
+        <!-- 8 阶段流程步骤导航 -->
+        <div class="bg-surface rounded-lg shadow-card p-5">
+          <div class="flex items-center justify-between relative">
+            <!-- 阶段1：信访举报（当前） -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md">
+                <i data-lucide="inbox" class="w-5 h-5 text-on-primary"></i>
+              </div>
+              <span class="text-xs font-semibold text-primary whitespace-nowrap">信访举报</span>
+              <span class="text-[10px] text-on-surface-variant/60">当前阶段</span>
+            </div>
+            <!-- 连接线 1-2 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段2：线索处置 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="search" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">线索处置</span>
+            </div>
+            <!-- 连接线 2-3 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段3：谈话函询 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="message-circle" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">谈话函询</span>
+            </div>
+            <!-- 连接线 3-4 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段4：初步核实 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="clipboard-check" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">初步核实</span>
+            </div>
+            <!-- 连接线 4-5 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段5：立案审查 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="gavel" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">立案审查</span>
+            </div>
+            <!-- 连接线 5-6 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段6：案件审理 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="scale" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">案件审理</span>
+            </div>
+            <!-- 连接线 6-7 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段7：复议复查 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="rotate-ccw" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">复议复查</span>
+            </div>
+            <!-- 连接线 7-8 -->
+            <div class="h-0.5 bg-outline-variant/40 flex-1 -mt-6"></div>
+            <!-- 阶段8：以案促改 -->
+            <div class="flex flex-col items-center gap-1.5 relative z-10 flex-1">
+              <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
+                <i data-lucide="lightbulb" class="w-5 h-5 text-on-surface-variant/50"></i>
+              </div>
+              <span class="text-xs font-medium text-on-surface-variant/50 whitespace-nowrap">以案促改</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 信访举报登记表单 -->
+        <div class="bg-surface rounded-lg shadow-card p-6">
+          <div class="flex items-center gap-2 mb-5">
+            <i data-lucide="file-plus" class="w-5 h-5 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">信访举报登记</h2>
+          </div>
+
+          <form id="form-report" class="space-y-5">
+            <!-- 举报人信息区域 -->
+            <div class="bg-surface-container rounded-lg p-4 space-y-4">
+              <h3 class="text-sm font-semibold text-on-surface flex items-center gap-1.5">
+                <i data-lucide="user" class="w-4 h-4 text-primary"></i>举报人信息
+              </h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">举报人姓名</label>
+                  <input id="input-reporter-name" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入举报人姓名"/>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">联系电话</label>
+                  <input id="input-reporter-phone" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入联系电话"/>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">身份证号</label>
+                  <input id="input-reporter-idcard" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入身份证号"/>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">举报人单位/住址</label>
+                  <input id="input-reporter-address" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入单位或住址"/>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">举报方式</label>
+                  <select id="select-report-method" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                    <option value="">请选择举报方式</option>
+                    <option value="letter">来信</option>
+                    <option value="visit">来访</option>
+                    <option value="phone">来电</option>
+                    <option value="network">网络举报</option>
+                    <option value="transfer">上级转办</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 被反映人信息区域 -->
+            <div class="bg-surface-container rounded-lg p-4 space-y-4">
+              <h3 class="text-sm font-semibold text-on-surface flex items-center gap-1.5">
+                <i data-lucide="user-x" class="w-4 h-4 text-error"></i>被反映人信息
+              </h3>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">被反映人姓名 <span class="text-error">*</span></label>
+                  <input id="input-target-name" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入被反映人姓名"/>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">被反映人部门 <span class="text-error">*</span></label>
+                  <select id="select-target-dept" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                    <option value="">请选择部门</option>
+                    <option value="office">办公室</option>
+                    <option value="finance">财务部</option>
+                    <option value="procurement">采购部</option>
+                    <option value="engineering">工程部</option>
+                    <option value="hr">人力资源部</option>
+                    <option value="marketing">市场部</option>
+                    <option value="it">信息技术部</option>
+                    <option value="legal">法务部</option>
+                  </select>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">被反映人职级</label>
+                  <select id="select-target-rank" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                    <option value="">请选择职级</option>
+                    <option value="section">科员</option>
+                    <option value="deputy-section">副科级</option>
+                    <option value="section-chief">正科级</option>
+                    <option value="deputy-division">副处级</option>
+                    <option value="division-chief">正处级</option>
+                    <option value="deputy-bureau">副厅级</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 举报内容区域 -->
+            <div class="bg-surface-container rounded-lg p-4 space-y-4">
+              <h3 class="text-sm font-semibold text-on-surface flex items-center gap-1.5">
+                <i data-lucide="file-warning" class="w-4 h-4 text-warning"></i>举报内容
+              </h3>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">举报类型 <span class="text-error">*</span></label>
+                  <select id="select-report-type" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                    <option value="">请选择举报类型</option>
+                    <option value="corruption">贪污贿赂</option>
+                    <option value="duty">失职渎职</option>
+                    <option value="discipline">违反廉洁纪律</option>
+                    <option value="workstyle">违反工作纪律</option>
+                    <option value="life">违反生活纪律</option>
+                    <option value="politics">违反政治纪律</option>
+                    <option value="organization">违反组织纪律</option>
+                    <option value="mass">违反群众纪律</option>
+                  </select>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-xs font-medium text-on-surface-variant">举报来源</label>
+                  <select id="select-report-source" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                    <option value="">请选择来源</option>
+                    <option value="self">本人举报</option>
+                    <option value="realname">实名举报</option>
+                    <option value="anonymous">匿名举报</option>
+                    <option value="transfer">上级转办</option>
+                    <option value="inspection">巡视巡察发现</option>
+                    <option value="audit">审计发现</option>
+                  </select>
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-medium text-on-surface-variant">举报标题 <span class="text-error">*</span></label>
+                <input id="input-report-title" type="text" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入举报标题"/>
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-medium text-on-surface-variant">举报内容 <span class="text-error">*</span></label>
+                <textarea id="textarea-report-content" rows="5" class="w-full bg-surface border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" placeholder="请详细描述举报内容，包括时间、地点、涉及人员、具体事项等"></textarea>
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-medium text-on-surface-variant">附件上传</label>
+                <div id="upload-area" class="border border-dashed border-outline-variant/50 rounded-lg p-5 text-center bg-surface hover:bg-surface-container/50 transition-colors cursor-pointer">
+                  <i data-lucide="upload-cloud" class="w-8 h-8 text-on-surface-variant/40 mx-auto mb-2"></i>
+                  <p class="text-sm text-on-surface-variant">点击或拖拽文件到此处上传</p>
+                  <p class="text-xs text-on-surface-variant/50 mt-1">支持 PDF、Word、图片格式，单个文件不超过 10MB</p>
+                  <input id="input-file-upload" type="file" multiple class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"/>
+                </div>
+                <!-- 已上传文件列表 -->
+                <div id="file-list" class="space-y-2 mt-3">
+                  <!-- 文件-1 -->
+                  <div class="flex items-center justify-between bg-surface-container rounded-md px-3 py-2 text-sm">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                      <span class="text-on-surface">举报材料_张某_20250115.pdf</span>
+                      <span class="text-xs text-on-surface-variant">2.3 MB</span>
+                    </div>
+                    <button type="button" class="text-error/70 hover:text-error transition-colors" title="删除">
+                      <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                  <!-- 文件-2 -->
+                  <div class="flex items-center justify-between bg-surface-container rounded-md px-3 py-2 text-sm">
+                    <div class="flex items-center gap-2">
+                      <i data-lucide="image" class="w-4 h-4 text-primary"></i>
+                      <span class="text-on-surface">证据截图_20250115.jpg</span>
+                      <span class="text-xs text-on-surface-variant">856 KB</span>
+                    </div>
+                    <button type="button" class="text-error/70 hover:text-error transition-colors" title="删除">
+                      <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 表单操作按钮 -->
+            <div class="flex items-center gap-3 pt-2">
+              <button id="btn-submit-report" type="button" class="bg-primary text-on-primary px-5 py-2.5 rounded-md text-sm font-medium
+                             hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="check" class="w-4 h-4"></i>提交登记
+              </button>
+              <button id="btn-reset-form" type="button" class="bg-surface-container text-on-surface px-5 py-2.5 rounded-md text-sm font-medium
+                             hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>重置表单
+              </button>
+              <button id="btn-draft-save" type="button" class="bg-surface-container text-on-surface-variant px-5 py-2.5 rounded-md text-sm font-medium
+                             hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+                <i data-lucide="save" class="w-4 h-4"></i>暂存草稿
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 已登记举报列表 -->
+        <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
+            <div class="flex items-center gap-2">
+              <i data-lucide="list" class="w-5 h-5 text-primary"></i>
+              <h2 class="text-base font-semibold text-on-surface">已登记举报列表</h2>
+              <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">共 5 条</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <!-- 搜索框 -->
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-on-surface-variant/50 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                <input id="input-search-report" type="text" class="w-56 bg-surface-container border-none rounded-md pl-9 pr-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="搜索举报编号或被反映人..."/>
+              </div>
+              <!-- 筛选 -->
+              <select id="select-filter-type" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                <option value="">全部类型</option>
+                <option value="corruption">贪污贿赂</option>
+                <option value="duty">失职渎职</option>
+                <option value="discipline">违反廉洁纪律</option>
+                <option value="workstyle">违反工作纪律</option>
+              </select>
+              <select id="select-filter-status" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer">
+                <option value="">全部状态</option>
+                <option value="pending">待处理</option>
+                <option value="processing">处理中</option>
+                <option value="transferred">已转线索</option>
+                <option value="closed">已办结</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 表格 -->
+          <div class="overflow-x-auto">
+            <!-- 表头 -->
+            <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide min-w-[900px]">
+              <span>举报编号</span>
+              <span>被反映人</span>
+              <span>举报类型</span>
+              <span>来源</span>
+              <span>登记时间</span>
+              <span>状态</span>
+              <span>操作</span>
+            </div>
+            <!-- 表格内容 -->
+            <div class="divide-y divide-outline-variant/20 min-w-[900px]">
+
+              <!-- 列表-举报1 -->
+              <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+                <span class="text-sm font-medium text-primary">XF-2025-00158</span>
+                <div>
+                  <span class="text-sm font-medium text-on-surface">王*强</span>
+                  <span class="text-xs text-on-surface-variant ml-1.5">采购部 · 正科级</span>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">贪污贿赂</span>
+                <span class="text-sm text-on-surface-variant">实名举报</span>
+                <span class="text-sm text-on-surface-variant">2025-01-15 14:30</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning w-fit">待处理</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-transfer-1" class="text-primary text-sm font-medium hover:underline" data-id="XF-2025-00158">转线索</button>
+                  <button id="btn-detail-1" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00158">详情</button>
+                  <button id="btn-edit-1" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00158">编辑</button>
+                </div>
+              </div>
+
+              <!-- 列表-举报2 -->
+              <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+                <span class="text-sm font-medium text-primary">XF-2025-00157</span>
+                <div>
+                  <span class="text-sm font-medium text-on-surface">李*明</span>
+                  <span class="text-xs text-on-surface-variant ml-1.5">工程部 · 副处级</span>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">失职渎职</span>
+                <span class="text-sm text-on-surface-variant">上级转办</span>
+                <span class="text-sm text-on-surface-variant">2025-01-14 09:15</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/10 text-success w-fit">已转线索</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-detail-2" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00157">详情</button>
+                  <button id="btn-edit-2" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00157">编辑</button>
+                </div>
+              </div>
+
+              <!-- 列表-举报3 -->
+              <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+                <span class="text-sm font-medium text-primary">XF-2025-00156</span>
+                <div>
+                  <span class="text-sm font-medium text-on-surface">赵*华</span>
+                  <span class="text-xs text-on-surface-variant ml-1.5">财务部 · 副科级</span>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">违反廉洁纪律</span>
+                <span class="text-sm text-on-surface-variant">匿名举报</span>
+                <span class="text-sm text-on-surface-variant">2025-01-13 16:42</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/10 text-warning w-fit">处理中</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-transfer-3" class="text-primary text-sm font-medium hover:underline" data-id="XF-2025-00156">转线索</button>
+                  <button id="btn-detail-3" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00156">详情</button>
+                  <button id="btn-edit-3" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00156">编辑</button>
+                </div>
+              </div>
+
+              <!-- 列表-举报4 -->
+              <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+                <span class="text-sm font-medium text-primary">XF-2025-00155</span>
+                <div>
+                  <span class="text-sm font-medium text-on-surface">陈*伟</span>
+                  <span class="text-xs text-on-surface-variant ml-1.5">办公室 · 正处级</span>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">违反工作纪律</span>
+                <span class="text-sm text-on-surface-variant">巡视巡察发现</span>
+                <span class="text-sm text-on-surface-variant">2025-01-12 10:08</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/10 text-success w-fit">已转线索</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-detail-4" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00155">详情</button>
+                  <button id="btn-edit-4" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00155">编辑</button>
+                </div>
+              </div>
+
+              <!-- 列表-举报5 -->
+              <div class="grid grid-cols-[1fr_1fr_1fr_0.8fr_1fr_0.8fr_1fr] px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+                <span class="text-sm font-medium text-primary">XF-2025-00154</span>
+                <div>
+                  <span class="text-sm font-medium text-on-surface">刘*军</span>
+                  <span class="text-xs text-on-surface-variant ml-1.5">人力资源部 · 副厅级</span>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-error/10 text-error w-fit">违反组织纪律</span>
+                <span class="text-sm text-on-surface-variant">审计发现</span>
+                <span class="text-sm text-on-surface-variant">2025-01-11 11:20</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-surface-container-high text-on-surface-variant w-fit">已办结</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-detail-5" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00154">详情</button>
+                  <button id="btn-edit-5" class="text-on-surface-variant text-sm hover:text-on-surface transition-colors" data-id="XF-2025-00154">编辑</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="flex items-center justify-between px-5 py-3 border-t border-outline-variant/20">
+            <span class="text-xs text-on-surface-variant">显示 1-5 条，共 5 条记录</span>
+            <div class="flex items-center gap-1">
+              <button class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed" disabled>
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <button class="w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium bg-primary text-on-primary">1</button>
+              <button class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed" disabled>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 转线索确认弹窗（默认隐藏） -->
+      <div id="modal-transfer" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-md w-full max-h-[90vh] overflow-y-auto p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center shrink-0">
+              <i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-on-surface">确认转线索处置</h3>
+              <p class="text-xs text-on-surface-variant mt-0.5">该操作将把信访举报转入线索处置阶段</p>
+            </div>
+          </div>
+
+          <div class="bg-surface-container rounded-lg p-4 mb-5 space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">举报编号</span>
+              <span id="modal-transfer-id" class="font-medium text-on-surface">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">被反映人</span>
+              <span id="modal-transfer-name" class="font-medium text-on-surface">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">举报类型</span>
+              <span id="modal-transfer-type" class="font-medium text-on-surface">--</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">当前阶段</span>
+              <span class="font-medium text-warning">信访举报</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-on-surface-variant">目标阶段</span>
+              <span class="font-medium text-primary">线索处置</span>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 mb-5">
+            <label class="text-xs font-medium text-on-surface-variant">流转意见</label>
+            <textarea id="textarea-transfer-opinion" rows="3" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" placeholder="请输入流转意见（选填）"></textarea>
+          </div>
+
+          <div class="flex items-center gap-3 justify-end">
+            <button id="btn-cancel-transfer" class="bg-surface-container text-on-surface px-4 py-2 rounded-md text-sm font-medium
+                           hover:bg-surface-container-high active:scale-[0.98] transition-all">取消</button>
+            <button id="btn-confirm-transfer" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium
+                           hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>确认流转
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 提交成功提示弹窗（默认隐藏） -->
+      <div id="modal-success" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-sm w-full p-6 text-center">
+          <div class="w-12 h-12 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-3">
+            <i data-lucide="check-circle" class="w-6 h-6 text-success"></i>
+          </div>
+          <h3 class="text-base font-semibold text-on-surface mb-1">登记成功</h3>
+          <p class="text-sm text-on-surface-variant mb-5">信访举报信息已成功登记，请等待后续处理。</p>
+          <button id="btn-close-success" class="bg-primary text-on-primary px-6 py-2 rounded-md text-sm font-medium
+                         hover:opacity-90 active:scale-[0.98] transition-all">确定</button>
+        </div>
+      </div>
+
+    <!-- @main-content:end -->
+  </main>
+
+  <script>
+    $(function() {
+
+      // ==================== 文件上传区域点击触发文件选择 ====================
+      $('#upload-area').on('click', function() {
+        $('#input-file-upload').click();
+      });
+
+      // 文件选择后的处理 - 模拟上传并添加到文件列表
+      $('#input-file-upload').on('change', function() {
+        var files = this.files;
+        if (files && files.length > 0) {
+          for (var i = 0; i < files.length; i++) {
+            var fileName = files[i].name;
+            var fileSize = (files[i].size / 1024).toFixed(1) + ' KB';
+            if (files[i].size > 1024 * 1024) {
+              fileSize = (files[i].size / (1024 * 1024)).toFixed(1) + ' MB';
+            }
+            var iconName = 'file-text';
+            if (/\.(jpg|jpeg|png|gif|webp)$/i.test(fileName)) {
+              iconName = 'image';
+            } else if (/\.pdf$/i.test(fileName)) {
+              iconName = 'file-text';
+            }
+            var fileHtml = '<div class="flex items-center justify-between bg-surface-container rounded-md px-3 py-2 text-sm">' +
+              '<div class="flex items-center gap-2">' +
+              '<i data-lucide="' + iconName + '" class="w-4 h-4 text-primary"></i>' +
+              '<span class="text-on-surface">' + fileName + '</span>' +
+              '<span class="text-xs text-on-surface-variant">' + fileSize + '</span>' +
+              '</div>' +
+              '<button type="button" class="text-error/70 hover:text-error transition-colors" title="删除">' +
+              '<i data-lucide="x" class="w-4 h-4"></i>' +
+              '</button>' +
+              '</div>';
+            $('#file-list').append(fileHtml);
+          }
+          lucide.createIcons();
+          // 清空 input 以便可以重复选择同一文件
+          $(this).val('');
+        }
+      });
+
+      // 文件列表删除按钮 - 事件委托
+      $('#file-list').on('click', 'button', function() {
+        $(this).closest('.flex').remove();
+      });
+
+      // ==================== 提交登记按钮 ====================
+      $('#btn-submit-report').on('click', function() {
+        // 简单校验必填字段
+        var targetName = $('#input-target-name').val().trim();
+        var targetDept = $('#select-target-dept').val();
+        var reportType = $('#select-report-type').val();
+        var reportTitle = $('#input-report-title').val().trim();
+        var reportContent = $('#textarea-report-content').val().trim();
+
+        if (!targetName || !targetDept || !reportType || !reportTitle || !reportContent) {
+          alert('请填写所有必填字段（被反映人姓名、被反映人部门、举报类型、举报标题、举报内容）');
+          return;
+        }
+
+        // 显示成功弹窗
+        $('#modal-success').removeClass('hidden');
+      });
+
+      // 关闭成功弹窗
+      $('#btn-close-success').on('click', function() {
+        $('#modal-success').addClass('hidden');
+        // 重置表单
+        $('#form-report')[0].reset();
+        $('#file-list').empty();
+      });
+
+      // ==================== 重置表单按钮 ====================
+      $('#btn-reset-form').on('click', function() {
+        if (confirm('确定要重置表单吗？所有已填写内容将被清空。')) {
+          $('#form-report')[0].reset();
+          $('#file-list').empty();
+        }
+      });
+
+      // ==================== 暂存草稿按钮 ====================
+      $('#btn-draft-save').on('click', function() {
+        alert('草稿已暂存（模拟），可在后续继续编辑。');
+      });
+
+      // ==================== 转线索按钮 - 打开确认弹窗 ====================
+      // 存储当前操作的举报数据
+      var currentTransferData = null;
+
+      // 点击转线索按钮
+      $('[id^="btn-transfer-"]').on('click', function() {
+        var row = $(this).closest('.grid');
+        var reportId = $(this).data('id');
+        var targetName = row.find('span.text-on-surface').first().text().trim();
+        var reportType = row.find('.bg-error\\/10, .bg-warning\\/10, .bg-success\\/10').text().trim();
+
+        // 填充弹窗信息
+        $('#modal-transfer-id').text(reportId);
+        $('#modal-transfer-name').text(targetName);
+        $('#modal-transfer-type').text(reportType);
+        $('#textarea-transfer-opinion').val('');
+
+        // 存储当前数据
+        currentTransferData = {
+          id: reportId,
+          name: targetName,
+          type: reportType
+        };
+
+        // 显示弹窗
+        $('#modal-transfer').removeClass('hidden');
+      });
+
+      // 取消转线索
+      $('#btn-cancel-transfer').on('click', function() {
+        $('#modal-transfer').addClass('hidden');
+        currentTransferData = null;
+      });
+
+      // 点击弹窗遮罩关闭
+      $('#modal-transfer').on('click', function(e) {
+        if (e.target === this) {
+          $('#modal-transfer').addClass('hidden');
+          currentTransferData = null;
+        }
+      });
+
+      // 确认转线索 - 跳转到线索处置页面
+      $('#btn-confirm-transfer').on('click', function() {
+        if (currentTransferData) {
+          var opinion = $('#textarea-transfer-opinion').val().trim();
+          console.log('流转意见:', opinion);
+          // 跳转到线索处置页面，携带举报编号
+          window.location.href = 'case-clue.html?reportId=' + encodeURIComponent(currentTransferData.id);
+        }
+      });
+
+      // ==================== 详情按钮 ====================
+      $('[id^="btn-detail-"]').on('click', function() {
+        var reportId = $(this).data('id');
+        // 详情查看 - 后续应实现：弹出详情弹窗或跳转详情页，展示该举报的完整信息
+        console.log('查看举报详情:', reportId);
+        alert('查看举报 ' + reportId + ' 的详细信息（详情弹窗待实现）');
+      });
+
+      // ==================== 编辑按钮 ====================
+      $('[id^="btn-edit-"]').on('click', function() {
+        var reportId = $(this).data('id');
+        // 编辑功能 - 后续应实现：
+        // 1. 将该举报的原始数据回填到上方登记表单中
+        // 2. 表单标题切换为"编辑举报信息"
+        // 3. 提交按钮文案切换为"保存修改"
+        // 4. 保存后更新列表中对应行的数据
+        console.log('编辑举报:', reportId);
+        alert('编辑举报 ' + reportId + '（编辑功能待实现，数据将回填至上方表单）');
+      });
+
+      // ==================== 搜索筛选 ====================
+      $('#input-search-report').on('input', function() {
+        var keyword = $(this).val().toLowerCase();
+        // 搜索过滤 - 后续应实现：根据关键词过滤列表行，匹配举报编号或被反映人姓名
+        console.log('搜索关键词:', keyword);
+      });
+
+      $('#select-filter-type, #select-filter-status').on('change', function() {
+        // 筛选过滤 - 后续应实现：根据选中的类型/状态筛选列表行
+        console.log('筛选条件变更');
+      });
+
+      // ==================== 图标初始化 ====================
+      lucide.createIcons();
+    });
+  </script>
+</body>
+
+</html>

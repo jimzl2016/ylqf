@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+    <div class="p-6 space-y-6">
+
+      <!-- 页面标题 -->
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-on-surface">初步核实</h1>
+          <p class="text-sm text-on-surface-variant mt-1">案件流程 · 第四阶段：对问题线索进行初步核实，收集证据材料</p>
+        </div>
+        <a href="case-overview.html" class="bg-surface-container text-on-surface-variant px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>返回流程总览
+        </a>
+      </div>
+
+      <!-- 8 阶段流程步骤导航 -->
+      <div class="bg-surface rounded-lg shadow-card p-5">
+        <div class="flex items-center justify-between relative">
+          <!-- 连接线背景 -->
+          <div class="absolute top-4 left-0 right-0 h-0.5 bg-outline-variant/30" style="z-index:0;"></div>
+          <!-- 阶段1：信访举报 -->
+          <a href="case-report.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">1</div>
+            <span class="text-xs text-on-surface-variant font-medium">信访举报</span>
+          </a>
+          <!-- 阶段2：线索处置 -->
+          <a href="case-clue.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">2</div>
+            <span class="text-xs text-on-surface-variant font-medium">线索处置</span>
+          </a>
+          <!-- 阶段3：谈话函询 -->
+          <a href="case-talk.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">3</div>
+            <span class="text-xs text-on-surface-variant font-medium">谈话函询</span>
+          </a>
+          <!-- 阶段4：初步核实（当前） -->
+          <div class="relative z-10 flex flex-col items-center gap-1.5">
+            <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center text-sm font-bold shadow-float">4</div>
+            <span class="text-xs text-primary font-semibold">初步核实</span>
+          </div>
+          <!-- 阶段5：立案审查 -->
+          <a href="case-review.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">5</div>
+            <span class="text-xs text-on-surface-variant font-medium">立案审查</span>
+          </a>
+          <!-- 阶段6：案件审理 -->
+          <a href="case-trial.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">6</div>
+            <span class="text-xs text-on-surface-variant font-medium">案件审理</span>
+          </a>
+          <!-- 阶段7：复议复查 -->
+          <a href="case-recheck.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">7</div>
+            <span class="text-xs text-on-surface-variant font-medium">复议复查</span>
+          </a>
+          <!-- 阶段8：以案促改 -->
+          <a href="case-reform.html" class="relative z-10 flex flex-col items-center gap-1.5 group">
+            <div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-xs font-semibold border-2 border-outline-variant/30 group-hover:border-primary/40 transition-colors">8</div>
+            <span class="text-xs text-on-surface-variant font-medium">以案促改</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 初核登记表单卡片 -->
+      <div class="bg-surface rounded-lg shadow-card p-5">
+        <div class="flex items-center gap-2 mb-5">
+          <i data-lucide="file-plus" class="w-5 h-5 text-primary"></i>
+          <h2 class="text-base font-semibold text-on-surface">初核登记</h2>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+          <!-- 初核对象 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-target" class="text-xs font-medium text-on-surface-variant">初核对象 <span class="text-error">*</span></label>
+            <input id="verify-target" type="text" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入被核查人姓名"/>
+          </div>
+          <!-- 初核事项 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-matter" class="text-xs font-medium text-on-surface-variant">初核事项 <span class="text-error">*</span></label>
+            <input id="verify-matter" type="text" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入初核事项"/>
+          </div>
+          <!-- 初核组组长 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-leader" class="text-xs font-medium text-on-surface-variant">初核组组长 <span class="text-error">*</span></label>
+            <select id="verify-leader" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer" style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2378716C' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 0.75rem center;">
+              <option value="">请选择组长</option>
+              <option value="1">李建国</option>
+              <option value="2">王建军</option>
+              <option value="3">陈志强</option>
+            </select>
+          </div>
+          <!-- 初核组成员 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-members" class="text-xs font-medium text-on-surface-variant">初核组成员 <span class="text-error">*</span></label>
+            <input id="verify-members" type="text" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入成员姓名，多人用逗号分隔"/>
+          </div>
+          <!-- 开始时间 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-start-date" class="text-xs font-medium text-on-surface-variant">开始时间 <span class="text-error">*</span></label>
+            <input id="verify-start-date" type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+          </div>
+          <!-- 预计完成时间 -->
+          <div class="flex flex-col gap-1.5">
+            <label for="verify-end-date" class="text-xs font-medium text-on-surface-variant">预计完成时间 <span class="text-error">*</span></label>
+            <input id="verify-end-date" type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/>
+          </div>
+        </div>
+        <!-- 表单操作按钮 -->
+        <div class="flex items-center gap-3 mt-5 pt-4 border-t border-outline-variant/20">
+          <button id="btn-verify-submit" class="bg-primary text-on-primary px-5 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i>提交登记
+          </button>
+          <button id="btn-verify-reset" class="bg-surface-container text-on-surface-variant px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">重置</button>
+        </div>
+      </div>
+
+      <!-- 初核列表 -->
+      <div class="bg-surface rounded-lg shadow-card overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-5 h-5 text-primary"></i>
+            <h2 class="text-base font-semibold text-on-surface">初核列表</h2>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">共 5 条</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- 搜索框 -->
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-on-surface-variant/50"></i>
+              <input id="search-verify" type="text" class="w-56 bg-surface-container border-none rounded-md pl-9 pr-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="搜索初核编号或对象..."/>
+            </div>
+            <!-- 状态筛选 -->
+            <select id="filter-status" class="bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors appearance-none cursor-pointer" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2216%22 height=%2216%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2378716C%22 stroke-width=%222%22%3E%3Cpath d=%22m6 9 6 6 6-6%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2rem;">
+              <option value="">全部状态</option>
+              <option value="in_progress">初核中</option>
+              <option value="completed">已完成</option>
+              <option value="transferred">已转立案</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 表格头 -->
+        <div class="grid grid-cols-8 px-5 py-3 bg-surface-container text-xs font-semibold text-on-surface-variant uppercase tracking-wide">
+          <span>初核编号</span>
+          <span>初核对象</span>
+          <span>初核事项</span>
+          <span>组长</span>
+          <span>开始时间</span>
+          <span>预计完成</span>
+          <span>状态</span>
+          <span>操作</span>
+        </div>
+
+        <!-- 表格内容 - 列表行1 -->
+        <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors border-b border-outline-variant/10 items-center">
+          <span class="text-sm font-medium text-primary">CH-2025-001</span>
+          <span class="text-sm text-on-surface">赵某强</span>
+          <span class="text-sm text-on-surface">涉嫌违规接受管理服务对象宴请及收受礼品问题</span>
+          <span class="text-sm text-on-surface-variant">李建国</span>
+          <span class="text-sm text-on-surface-variant">2025-01-08</span>
+          <span class="text-sm text-on-surface-variant">2025-02-08</span>
+          <span><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">初核中</span></span>
+          <div class="flex items-center gap-2">
+            <button id="btn-detail-1" class="text-primary text-sm font-medium hover:underline">详情</button>
+            <button id="btn-transfer-1" class="text-error text-sm font-medium hover:underline">转立案</button>
+          </div>
+        </div>
+
+        <!-- 表格内容 - 列表行2 -->
+        <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors border-b border-outline-variant/10 items-center">
+          <span class="text-sm font-medium text-primary">CH-2025-002</span>
+          <span class="text-sm text-on-surface">钱某华</span>
+          <span class="text-sm text-on-surface">涉嫌利用职务便利为亲属经营活动谋取利益问题</span>
+          <span class="text-sm text-on-surface-variant">王建军</span>
+          <span class="text-sm text-on-surface-variant">2025-01-12</span>
+          <span class="text-sm text-on-surface-variant">2025-02-12</span>
+          <span><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">初核中</span></span>
+          <div class="flex items-center gap-2">
+            <button id="btn-detail-2" class="text-primary text-sm font-medium hover:underline">详情</button>
+            <button id="btn-transfer-2" class="text-error text-sm font-medium hover:underline">转立案</button>
+          </div>
+        </div>
+
+        <!-- 表格内容 - 列表行3 -->
+        <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors border-b border-outline-variant/10 items-center">
+          <span class="text-sm font-medium text-primary">CH-2025-003</span>
+          <span class="text-sm text-on-surface">孙某明</span>
+          <span class="text-sm text-on-surface">涉嫌虚列开支套取财政资金问题</span>
+          <span class="text-sm text-on-surface-variant">陈志强</span>
+          <span class="text-sm text-on-surface-variant">2025-01-15</span>
+          <span class="text-sm text-on-surface-variant">2025-02-15</span>
+          <span><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已完成</span></span>
+          <div class="flex items-center gap-2">
+            <button id="btn-detail-3" class="text-primary text-sm font-medium hover:underline">详情</button>
+            <button id="btn-transfer-3" class="text-error text-sm font-medium hover:underline">转立案</button>
+          </div>
+        </div>
+
+        <!-- 表格内容 - 列表行4 -->
+        <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors border-b border-outline-variant/10 items-center">
+          <span class="text-sm font-medium text-primary">CH-2025-004</span>
+          <span class="text-sm text-on-surface">李某芳</span>
+          <span class="text-sm text-on-surface">涉嫌在干部选拔任用中违规操作问题</span>
+          <span class="text-sm text-on-surface-variant">李建国</span>
+          <span class="text-sm text-on-surface-variant">2025-01-20</span>
+          <span class="text-sm text-on-surface-variant">2025-02-20</span>
+          <span><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">初核中</span></span>
+          <div class="flex items-center gap-2">
+            <button id="btn-detail-4" class="text-primary text-sm font-medium hover:underline">详情</button>
+            <button id="btn-transfer-4" class="text-error text-sm font-medium hover:underline">转立案</button>
+          </div>
+        </div>
+
+        <!-- 表格内容 - 列表行5 -->
+        <div class="grid grid-cols-8 px-5 py-3.5 hover:bg-surface-container/50 transition-colors items-center">
+          <span class="text-sm font-medium text-primary">CH-2025-005</span>
+          <span class="text-sm text-on-surface">周某涛</span>
+          <span class="text-sm text-on-surface">涉嫌违规干预工程项目招投标问题</span>
+          <span class="text-sm text-on-surface-variant">王建军</span>
+          <span class="text-sm text-on-surface-variant">2025-01-25</span>
+          <span class="text-sm text-on-surface-variant">2025-02-25</span>
+          <span><span class="inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">已转立案</span></span>
+          <div class="flex items-center gap-2">
+            <button id="btn-detail-5" class="text-primary text-sm font-medium hover:underline">详情</button>
+            <span class="text-xs text-on-surface-variant/50">已流转</span>
+          </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="flex items-center justify-between px-5 py-3 border-t border-outline-variant/10">
+          <span class="text-xs text-on-surface-variant">显示 1-5 条，共 5 条记录</span>
+          <div class="flex items-center gap-1">
+            <button class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+            <button class="w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium bg-primary text-on-primary">1</button>
+            <button class="w-8 h-8 rounded-md flex items-center justify-center text-on-surface-variant/40 cursor-not-allowed"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 转立案确认弹窗（默认隐藏） -->
+    <div id="modal-transfer" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="bg-surface rounded-xl shadow-dialog max-w-md w-full p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center shrink-0">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-error"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-semibold text-on-surface">确认转立案审查</h3>
+            <p class="text-xs text-on-surface-variant mt-0.5">该操作将把当前初核案件流转至立案审查阶段</p>
+          </div>
+        </div>
+        <div class="bg-surface-container rounded-md p-4 mb-5 space-y-2">
+          <div class="flex justify-between text-sm">
+            <span class="text-on-surface-variant">初核编号</span>
+            <span id="modal-verify-code" class="font-medium text-on-surface">--</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-on-surface-variant">初核对象</span>
+            <span id="modal-verify-target" class="font-medium text-on-surface">--</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-on-surface-variant">初核事项</span>
+            <span id="modal-verify-matter" class="font-medium text-on-surface">--</span>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1.5 mb-5">
+          <label for="modal-transfer-note" class="text-xs font-medium text-on-surface-variant">流转意见</label>
+          <textarea id="modal-transfer-note" rows="3" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" placeholder="请输入流转意见（选填）"></textarea>
+        </div>
+        <div class="flex items-center gap-3 justify-end">
+          <button id="btn-modal-cancel" class="bg-surface-container text-on-surface-variant px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">取消</button>
+          <button id="btn-modal-confirm" class="bg-error text-white px-5 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>确认转立案
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- @main-content:end -->
+  </main>
+  </div>
+
+  <script>
+    $(function() {
+
+      // ===== 初核登记表单提交 =====
+      $('#btn-verify-submit').on('click', function() {
+        var target = $('#verify-target').val();
+        var matter = $('#verify-matter').val();
+        var leader = $('#verify-leader').val();
+        var members = $('#verify-members').val();
+        var startDate = $('#verify-start-date').val();
+        var endDate = $('#verify-end-date').val();
+
+        if (!target || !matter || !leader || !members || !startDate || !endDate) {
+          alert('请填写所有必填字段（标记 * 的字段）');
+          return;
+        }
+
+        // 提交后应实现：
+        // 1. 将表单数据发送至后端接口保存
+        // 2. 刷新初核列表，新记录追加到表格顶部
+        // 3. 重置表单所有字段
+        // 4. 显示 Toast 提示"初核登记提交成功"
+        console.log('初核登记提交:', { target: target, matter: matter, leader: leader, members: members, startDate: startDate, endDate: endDate });
+        alert('初核登记提交成功！');
+        $('#verify-target').val('');
+        $('#verify-matter').val('');
+        $('#verify-leader').val('');
+        $('#verify-members').val('');
+        $('#verify-start-date').val('');
+        $('#verify-end-date').val('');
+      });
+
+      // ===== 重置按钮 =====
+      $('#btn-verify-reset').on('click', function() {
+        $('#verify-target').val('');
+        $('#verify-matter').val('');
+        $('#verify-leader').val('');
+        $('#verify-members').val('');
+        $('#verify-start-date').val('');
+        $('#verify-end-date').val('');
+      });
+
+      // ===== 搜索框 =====
+      $('#search-verify').on('input', function() {
+        var keyword = $(this).val().toLowerCase();
+        // 搜索应实现：
+        // 1. 遍历表格每一行（除表头外）
+        // 2. 匹配初核编号和初核对象列
+        // 3. 不匹配的行隐藏，匹配的行显示
+        // 4. 更新分页计数
+        console.log('搜索关键词:', keyword);
+      });
+
+      // ===== 状态筛选 =====
+      $('#filter-status').on('change', function() {
+        var status = $(this).val();
+        // 筛选应实现：
+        // 1. 根据选中的状态值过滤表格行
+        // 2. 空值显示全部
+        // 3. 更新分页计数
+        console.log('筛选状态:', status);
+      });
+
+      // ===== 转立案按钮 - 弹出确认弹窗 =====
+      $('[id^="btn-transfer-"]').on('click', function() {
+        var row = $(this).closest('.grid');
+        var code = row.find('span').eq(0).text().trim();
+        var target = row.find('span').eq(1).text().trim();
+        var matter = row.find('span').eq(2).text().trim();
+
+        // 填充弹窗信息
+        $('#modal-verify-code').text(code);
+        $('#modal-verify-target').text(target);
+        $('#modal-verify-matter').text(matter);
+        $('#modal-transfer-note').val('');
+
+        // 显示弹窗
+        $('#modal-transfer').removeClass('hidden');
+      });
+
+      // ===== 弹窗取消按钮 =====
+      $('#btn-modal-cancel').on('click', function() {
+        $('#modal-transfer').addClass('hidden');
+      });
+
+      // ===== 弹窗遮罩层点击关闭 =====
+      $('#modal-transfer').on('click', function(e) {
+        if (e.target === this) {
+          $(this).addClass('hidden');
+        }
+      });
+
+      // ===== 弹窗确认转立案 =====
+      $('#btn-modal-confirm').on('click', function() {
+        var code = $('#modal-verify-code').text();
+        var note = $('#modal-transfer-note').val();
+
+        // 确认后应实现：
+        // 1. 调用后端接口将初核记录流转至立案审查阶段
+        // 2. 更新当前行状态为"已转立案"
+        // 3. 关闭弹窗
+        // 4. 显示 Toast 提示"已成功转立案审查"
+        // 5. 跳转至立案审查页面
+        console.log('转立案确认:', { code: code, note: note });
+        $('#modal-transfer').addClass('hidden');
+        window.location.href = 'case-review.html?verify_code=' + encodeURIComponent(code);
+      });
+
+      // ===== 详情按钮 =====
+      $('[id^="btn-detail-"]').on('click', function() {
+        var row = $(this).closest('.grid');
+        var code = row.find('span').eq(0).text().trim();
+        // 详情按钮应实现：
+        // 1. 跳转至初核详情页或弹出详情弹窗
+        // 2. 展示该初核记录的完整信息（表单字段 + 附件 + 操作日志）
+        console.log('查看详情:', code);
+      });
+
+      // 初始化 Lucide 图标
+      lucide.createIcons();
+    });
+  </script>
+</body>
+
+</html>
