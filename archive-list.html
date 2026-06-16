@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>档案列表 - 艺旅清风智慧监督系统</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  </head>
+  <body>
+    <div id="app" class="app-container">
+      <!-- 侧边栏（复用index.html） -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">艺</div>
+          <div class="sidebar-title">
+            <h1>艺旅清风</h1>
+            <p>智慧监督系统</p>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <ul class="nav-menu">
+            <li class="nav-item">
+              <a href="index.html" class="nav-link">
+                <i class="fas fa-th-large icon"></i>
+                <span>廉政概览</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link active" data-submenu="archive">
+                <i class="fas fa-file-alt icon"></i>
+                <span>档案管理</span>
+                <i class="fas fa-chevron-right nav-arrow open"></i>
+              </a>
+              <ul class="nav-submenu open" id="submenu-archive">
+                <li><a href="archive-list.html" class="nav-link active">档案列表</a></li>
+                <li><a href="archive-create.html" class="nav-link">档案录入</a></li>
+                <li><a href="archive-opinion.html" class="nav-link">意见管理</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link" data-submenu="ai-analysis">
+                <i class="fas fa-brain icon"></i>
+                <span>AI廉政分析</span>
+                <i class="fas fa-chevron-right nav-arrow"></i>
+              </a>
+              <ul class="nav-submenu" id="submenu-ai-analysis">
+                <li><a href="ai-chat.html" class="nav-link">智能对话</a></li>
+                <li><a href="ai-warning.html" class="nav-link">预警列表</a></li>
+                <li><a href="ai-report.html" class="nav-link">分析报告</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link" data-submenu="case">
+                <i class="fas fa-folder-open icon"></i>
+                <span>案件管理</span>
+                <i class="fas fa-chevron-right nav-arrow"></i>
+              </a>
+              <ul class="nav-submenu" id="submenu-case">
+                <li><a href="case-overview.html" class="nav-link">流程总览</a></li>
+                <li><a href="case-report.html" class="nav-link">信访举报</a></li>
+                <li><a href="case-clue.html" class="nav-link">线索处置</a></li>
+                <li><a href="case-talk.html" class="nav-link">谈话函询</a></li>
+                <li><a href="case-verify.html" class="nav-link">初步核实</a></li>
+                <li><a href="case-investigate.html" class="nav-link">立案审查</a></li>
+                <li><a href="case-hearing.html" class="nav-link">案件审理</a></li>
+                <li><a href="case-reform.html" class="nav-link">以案促改</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link" data-submenu="ledger">
+                <i class="fas fa-book icon"></i>
+                <span>台账管理</span>
+                <i class="fas fa-chevron-right nav-arrow"></i>
+              </a>
+              <ul class="nav-submenu" id="submenu-ledger">
+                <li><a href="ledger-report.html" class="nav-link">信访台账</a></li>
+                <li><a href="ledger-clue.html" class="nav-link">线索台账</a></li>
+                <li><a href="ledger-disposal.html" class="nav-link">处置统计</a></li>
+                <li><a href="ledger-discipline.html" class="nav-link">处分统计</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a href="#" class="nav-link" data-submenu="lowcode">
+                <i class="fas fa-code icon"></i>
+                <span>低代码平台</span>
+                <i class="fas fa-chevron-right nav-arrow"></i>
+              </a>
+              <ul class="nav-submenu" id="submenu-lowcode">
+                <li><a href="lowcode-form.html" class="nav-link">表单设计器</a></li>
+                <li><a href="lowcode-list.html" class="nav-link">列表设计器</a></li>
+                <li><a href="lowcode-flow.html" class="nav-link">流程设计器</a></li>
+                <li><a href="lowcode-permission.html" class="nav-link">权限配置</a></li>
+                <li><a href="lowcode-version.html" class="nav-link">版本管理</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="user-avatar">管</div>
+          <div class="user-info">
+            <p class="name">管理员</p>
+            <p class="dept">纪委办公室</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 主内容区 -->
+      <main class="main-content">
+        <header class="main-header">
+          <div class="header-title">
+            <h2>湖北艺术职业学院智慧监督系统</h2>
+          </div>
+          <div class="header-tools">
+            <div class="search-box">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" class="search-input" placeholder="搜索姓名、部门..." />
+            </div>
+            <button class="header-btn">
+              <i class="fas fa-bell"></i>
+            </button>
+            <button class="header-btn">
+              <i class="fas fa-user"></i>
+            </button>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <!-- 页面标题 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h1>人员档案管理</h1>
+              <p>人员档案全生命周期管理</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-sm">
+                <i class="fas fa-download"></i>
+                批量导出
+              </button>
+              <button class="btn btn-sm">
+                <i class="fas fa-upload"></i>
+                批量导入
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="showToast('进入档案录入页面'); navigateTo('archive-create.html');">
+                <i class="fas fa-plus"></i>
+                新建档案
+              </button>
+            </div>
+          </div>
+
+          <!-- 筛选栏 -->
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="card-body">
+              <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 180px;">
+                  <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">姓名</label>
+                  <input type="text" class="search-input" style="width: 100%;" placeholder="请输入姓名" />
+                </div>
+                <div style="flex: 1; min-width: 180px;">
+                  <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">部门</label>
+                  <select class="search-input" style="width: 100%;">
+                    <option value="">全部</option>
+                    <option value="1">教务处</option>
+                    <option value="2">财务处</option>
+                    <option value="3">后勤处</option>
+                    <option value="4">学生处</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 180px;">
+                  <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">职级</label>
+                  <select class="search-input" style="width: 100%;">
+                    <option value="">全部</option>
+                    <option value="1">正处级</option>
+                    <option value="2">副处级</option>
+                    <option value="3">正科级</option>
+                    <option value="4">副科级</option>
+                    <option value="5">科员</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 180px;">
+                  <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px;">状态</label>
+                  <select class="search-input" style="width: 100%;">
+                    <option value="">全部</option>
+                    <option value="1">正常</option>
+                    <option value="2">预警</option>
+                    <option value="3">已处理</option>
+                  </select>
+                </div>
+                <div style="display: flex; gap: 8px; align-self: flex-end;">
+                  <button class="btn btn-sm" onclick="showToast('已重置筛选');">
+                    <i class="fas fa-redo"></i>
+                    重置
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="showToast('已执行筛选');">
+                    <i class="fas fa-search"></i>
+                    查询
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 统计概览 -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="stat-card primary" style="padding: 16px;">
+              <div class="stat-info">
+                <p class="label">档案总数</p>
+                <p class="value">156</p>
+              </div>
+            </div>
+            <div class="stat-card success" style="padding: 16px;">
+              <div class="stat-info">
+                <p class="label">正常</p>
+                <p class="value">142</p>
+              </div>
+            </div>
+            <div class="stat-card warning" style="padding: 16px;">
+              <div class="stat-info">
+                <p class="label">预警</p>
+                <p class="value">10</p>
+              </div>
+            </div>
+            <div class="stat-card danger" style="padding: 16px;">
+              <div class="stat-info">
+                <p class="label">已处理</p>
+                <p class="value">4</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 数据表格 -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">人员档案列表</h3>
+              <div class="flex items-center gap-2">
+                <span class="text-muted text-sm">共 5 条记录</span>
+              </div>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>姓名</th>
+                    <th>部门</th>
+                    <th>职位</th>
+                    <th>职级</th>
+                    <th>状态</th>
+                    <th>分类标识</th>
+                    <th>更新时间</th>
+                    <th style="width: 200px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 500;">张三</td>
+                    <td>教务处</td>
+                    <td>处长</td>
+                    <td>正处级</td>
+                    <td><span class="badge badge-success">正常</span></td>
+                    <td>
+                      <span class="badge badge-outline">无</span>
+                    </td>
+                    <td>2024-06-10</td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="btn btn-sm btn-icon" onclick="showToast('查看详情');" title="查看"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('编辑档案');" title="编辑"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('导出档案');" title="导出"><i class="fas fa-download"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 500;">李四</td>
+                    <td>财务处</td>
+                    <td>副处长</td>
+                    <td>副处级</td>
+                    <td><span class="badge badge-warning">预警</span></td>
+                    <td>
+                      <span class="badge badge-primary" style="margin-right: 4px;">党纪</span>
+                    </td>
+                    <td>2024-05-15</td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="btn btn-sm btn-icon" onclick="showToast('查看详情');" title="查看"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('编辑档案');" title="编辑"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('导出档案');" title="导出"><i class="fas fa-download"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 500;">王五</td>
+                    <td>后勤处</td>
+                    <td>科员</td>
+                    <td>科员</td>
+                    <td><span class="badge badge-danger">已处理</span></td>
+                    <td>
+                      <span class="badge badge-primary" style="margin-right: 4px;">党纪</span>
+                      <span class="badge badge-warning" style="margin-right: 4px;">政纪</span>
+                      <span class="badge badge-danger">组织</span>
+                    </td>
+                    <td>2024-06-01</td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="btn btn-sm btn-icon" onclick="showToast('查看详情');" title="查看"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('编辑档案');" title="编辑"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('导出档案');" title="导出"><i class="fas fa-download"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 500;">赵六</td>
+                    <td>学生处</td>
+                    <td>处长</td>
+                    <td>正处级</td>
+                    <td><span class="badge badge-success">正常</span></td>
+                    <td>
+                      <span class="badge badge-outline">无</span>
+                    </td>
+                    <td>2024-06-05</td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="btn btn-sm btn-icon" onclick="showToast('查看详情');" title="查看"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('编辑档案');" title="编辑"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('导出档案');" title="导出"><i class="fas fa-download"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 500;">钱七</td>
+                    <td>招生办</td>
+                    <td>主任</td>
+                    <td>正科级</td>
+                    <td><span class="badge badge-warning">预警</span></td>
+                    <td>
+                      <span class="badge badge-outline">无</span>
+                    </td>
+                    <td>2024-06-08</td>
+                    <td>
+                      <div class="flex gap-2">
+                        <button class="btn btn-sm btn-icon" onclick="showToast('查看详情');" title="查看"><i class="fas fa-eye"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('编辑档案');" title="编辑"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-icon" onclick="showToast('导出档案');" title="导出"><i class="fas fa-download"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 分页 -->
+          <div class="pagination">
+            <button class="page-btn" onclick="showToast('上一页');">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn" onclick="showToast('跳转至第2页');">2</button>
+            <button class="page-btn" onclick="showToast('跳转至第3页');">3</button>
+            <button class="page-btn" onclick="showToast('下一页');">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/scripts/main.js"></script>
+  </body>
+</html>
