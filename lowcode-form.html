@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+
+      <!-- 顶部工具栏 -->
+      <div class="sticky top-0 z-30 bg-surface border-b border-outline-variant/20 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <i data-lucide="form-input" class="w-5 h-5 text-primary"></i>
+            <h1 class="text-lg font-bold text-on-surface">表单设计器</h1>
+          </div>
+          <span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-sm">廉政档案登记表</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-save" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i>保存
+          </button>
+          <button id="btn-preview" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+            <i data-lucide="eye" class="w-3.5 h-3.5"></i>预览
+          </button>
+          <button id="btn-publish" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+            <i data-lucide="rocket" class="w-3.5 h-3.5"></i>发布
+          </button>
+          <button id="btn-version" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-1.5">
+            <i data-lucide="git-branch-plus" class="w-3.5 h-3.5"></i>版本
+          </button>
+        </div>
+      </div>
+
+      <!-- 三栏主体区域 -->
+      <div class="flex" style="height: calc(100vh - 4rem - 57px);">
+
+        <!-- ===== 左侧：组件面板 ===== -->
+        <aside id="component-panel" class="w-56 shrink-0 bg-surface border-r border-outline-variant/20 overflow-y-auto">
+          <div class="p-3">
+            <div class="mb-3">
+              <input id="component-search" class="w-full bg-surface-container border-none rounded-md px-3 py-1.5 text-xs text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="搜索组件..."/>
+            </div>
+            <div class="mb-3">
+              <div class="text-xs font-semibold text-on-surface-variant/70 uppercase tracking-wider px-1 mb-1.5">基础字段</div>
+              <div class="space-y-0.5">
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="text" data-category="basic" draggable="true">
+                  <i data-lucide="type" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>单行文本</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="textarea" data-category="basic" draggable="true">
+                  <i data-lucide="align-left" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>多行文本</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="number" data-category="basic" draggable="true">
+                  <i data-lucide="hash" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>数字</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="date" data-category="basic" draggable="true">
+                  <i data-lucide="calendar" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>日期</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="select" data-category="basic" draggable="true">
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>下拉选择</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="radio" data-category="basic" draggable="true">
+                  <i data-lucide="circle" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>单选</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="checkbox" data-category="basic" draggable="true">
+                  <i data-lucide="check-square" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>多选</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="upload" data-category="basic" draggable="true">
+                  <i data-lucide="paperclip" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>附件上传</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="user" data-category="basic" draggable="true">
+                  <i data-lucide="user" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>人员选择</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="dept" data-category="basic" draggable="true">
+                  <i data-lucide="building" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>部门选择</span>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="text-xs font-semibold text-on-surface-variant/70 uppercase tracking-wider px-1 mb-1.5">布局组件</div>
+              <div class="space-y-0.5">
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="group" data-category="layout" draggable="true">
+                  <i data-lucide="folder" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>分组</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="columns" data-category="layout" draggable="true">
+                  <i data-lucide="columns-2" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>分栏</span>
+                </div>
+                <div class="component-item flex items-center gap-2 px-2.5 py-2 rounded-md cursor-grab hover:bg-surface-container transition-colors text-sm text-on-surface" data-type="tabs" data-category="layout" draggable="true">
+                  <i data-lucide="layers" class="w-3.5 h-3.5 text-on-surface-variant shrink-0"></i><span>标签页</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ===== 中间：设计画布 ===== -->
+        <div id="canvas-wrapper" class="flex-1 min-w-0 bg-surface-container-lowest overflow-y-auto">
+          <div class="sticky top-0 z-20 bg-surface-container-lowest px-4 py-2.5 flex items-center justify-between border-b border-outline-variant/10">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-on-surface-variant">画布</span>
+              <span id="field-count" class="text-xs font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm">10 个字段</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button id="layout-single" class="w-7 h-7 flex items-center justify-center rounded bg-primary text-on-primary text-xs font-medium" title="单列布局"><i data-lucide="rectangle-vertical" class="w-3.5 h-3.5"></i></button>
+              <button id="layout-double" class="w-7 h-7 flex items-center justify-center rounded bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-xs font-medium" title="双列布局"><i data-lucide="columns-2" class="w-3.5 h-3.5"></i></button>
+              <button id="layout-triple" class="w-7 h-7 flex items-center justify-center rounded bg-surface-container text-on-surface-variant hover:bg-surface-container-high text-xs font-medium" title="三列布局"><i data-lucide="columns-3" class="w-3.5 h-3.5"></i></button>
+              <button id="btn-clear-canvas" class="w-7 h-7 flex items-center justify-center rounded bg-surface-container text-on-surface-variant hover:bg-error/10 hover:text-error text-xs font-medium" title="清空画布"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </div>
+          </div>
+          <div id="form-canvas" class="p-4">
+            <div class="max-w-2xl mx-auto bg-surface rounded-xl shadow-card p-6 min-h-[600px]" id="canvas-drop-zone">
+
+              <!-- 画布-字段1：单行文本 - 姓名 -->
+              <div class="canvas-field mb-4" data-field-id="f1" data-field-type="text">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">姓名 <span class="text-error">*</span></label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f1" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f1" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <input class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入姓名" readonly/>
+              </div>
+
+              <!-- 画布-字段2：下拉选择 - 性别 -->
+              <div class="canvas-field mb-4" data-field-id="f2" data-field-type="select">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">性别 <span class="text-error">*</span></label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f2" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f2" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <select class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" disabled>
+                  <option>请选择性别</option><option>男</option><option>女</option>
+                </select>
+              </div>
+
+              <!-- 画布-字段3：日期 - 出生日期 -->
+              <div class="canvas-field mb-4" data-field-id="f3" data-field-type="date">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">出生日期</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f3" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f3" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <input type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" readonly/>
+              </div>
+
+              <!-- 画布-字段4：人员选择 - 分管领导 -->
+              <div class="canvas-field mb-4" data-field-id="f4" data-field-type="user">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">分管领导</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f4" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f4" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer">
+                  <i data-lucide="user-plus" class="w-3.5 h-3.5"></i><span>点击选择人员</span>
+                </div>
+              </div>
+
+              <!-- 画布-字段5：部门选择 - 所属部门 -->
+              <div class="canvas-field mb-4" data-field-id="f5" data-field-type="dept">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">所属部门 <span class="text-error">*</span></label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f5" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f5" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer">
+                  <i data-lucide="building" class="w-3.5 h-3.5"></i><span>点击选择部门</span>
+                </div>
+              </div>
+
+              <!-- 画布-字段6：单选 - 政治面貌 -->
+              <div class="canvas-field mb-4" data-field-id="f6" data-field-type="radio">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">政治面貌 <span class="text-error">*</span></label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f6" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f6" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-4 px-1">
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="political" class="accent-primary" disabled/> 中共党员</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="political" class="accent-primary" disabled/> 中共预备党员</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="political" class="accent-primary" disabled/> 共青团员</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="political" class="accent-primary" disabled/> 群众</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="political" class="accent-primary" disabled/> 民主党派</label>
+                </div>
+              </div>
+
+              <!-- 画布-字段7：数字 - 年龄 -->
+              <div class="canvas-field mb-4" data-field-id="f7" data-field-type="number">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">年龄</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f7" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f7" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <input type="number" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入年龄" readonly/>
+              </div>
+
+              <!-- 画布-字段8：多行文本 - 个人简历 -->
+              <div class="canvas-field mb-4" data-field-id="f8" data-field-type="textarea">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">个人简历</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f8" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f8" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <textarea class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" rows="3" placeholder="请输入个人简历" readonly></textarea>
+              </div>
+
+              <!-- 画布-字段9：多选 - 专长领域 -->
+              <div class="canvas-field mb-4" data-field-id="f9" data-field-type="checkbox">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">专长领域</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f9" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f9" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-4 px-1">
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 纪检监察</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 审计财务</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 法律法规</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 信息技术</label>
+                  <label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 组织人事</label>
+                </div>
+              </div>
+
+              <!-- 画布-字段10：附件上传 - 相关材料 -->
+              <div class="canvas-field mb-4" data-field-id="f10" data-field-type="upload">
+                <div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">
+                  <label class="text-sm font-medium text-on-surface">相关材料</label>
+                  <div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">
+                    <button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="f10" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+                    <button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="f10" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    <span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>
+                  </div>
+                </div>
+                <div class="border-2 border-dashed border-outline-variant/30 rounded-lg p-4 text-center cursor-pointer hover:border-primary/40 transition-colors">
+                  <i data-lucide="upload-cloud" class="w-6 h-6 text-on-surface-variant/40 mx-auto mb-1"></i>
+                  <p class="text-xs text-on-surface-variant">点击或拖拽文件到此处上传</p>
+                  <p class="text-xs text-on-surface-variant/50 mt-0.5">支持 PDF、Word、图片，单文件不超过 10MB</p>
+                </div>
+              </div>
+
+              <!-- 画布底部：添加字段占位区 -->
+              <div id="canvas-placeholder" class="border-2 border-dashed border-outline-variant/20 rounded-lg p-6 text-center mt-4 hidden">
+                <i data-lucide="plus-circle" class="w-8 h-8 text-on-surface-variant/30 mx-auto mb-2"></i>
+                <p class="text-sm text-on-surface-variant/50">从左侧拖拽组件到此处添加字段</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== 右侧：属性配置面板 ===== -->
+        <aside id="property-panel" class="w-72 shrink-0 bg-surface border-l border-outline-variant/20 overflow-y-auto">
+          <div class="p-4">
+            <div id="prop-empty" class="text-center py-12 hidden">
+              <i data-lucide="mouse-pointer-click" class="w-10 h-10 text-on-surface-variant/25 mx-auto mb-3"></i>
+              <p class="text-sm text-on-surface-variant/50">点击画布中的字段</p>
+              <p class="text-xs text-on-surface-variant/40 mt-1">查看和编辑属性配置</p>
+            </div>
+            <div id="prop-content">
+              <div class="flex items-center gap-2 mb-4">
+                <div class="w-8 h-8 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                  <i data-lucide="type" class="w-4 h-4 text-primary" id="prop-field-icon"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold text-on-surface" id="prop-field-type-name">单行文本</div>
+                  <div class="text-xs text-on-surface-variant" id="prop-field-id-display">field_name</div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1">字段标识</label>
+                  <input id="prop-field-id" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="field_name"/>
+                  <p class="text-xs text-on-surface-variant/50 mt-0.5">唯一标识，提交后不可修改</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1">标题</label>
+                  <input id="prop-field-title" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="姓名"/>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1">占位提示</label>
+                  <input id="prop-field-placeholder" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="请输入姓名"/>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-xs font-medium text-on-surface-variant">是否必填</label>
+                  <button id="prop-field-required" class="relative w-9 h-5 rounded-full bg-primary transition-colors" role="switch" aria-checked="true">
+                    <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform translate-x-4"></span>
+                  </button>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-xs font-medium text-on-surface-variant">是否只读</label>
+                  <button id="prop-field-readonly" class="relative w-9 h-5 rounded-full bg-outline-variant/40 transition-colors" role="switch" aria-checked="false">
+                    <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform"></span>
+                  </button>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1">默认值</label>
+                  <input id="prop-field-default" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="无默认值"/>
+                </div>
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="text-xs font-medium text-on-surface-variant">校验规则</label>
+                    <button id="btn-add-rule" class="text-xs text-primary font-medium hover:underline">+ 添加规则</button>
+                  </div>
+                  <div id="validation-rules" class="space-y-1.5">
+                    <div class="flex items-center gap-2 bg-surface-container rounded-md px-3 py-1.5 text-xs" data-rule-id="r1">
+                      <span class="text-on-surface flex-1">必填校验</span>
+                      <span class="text-on-surface-variant/60">不能为空</span>
+                      <button class="btn-remove-rule text-on-surface-variant/40 hover:text-error transition-colors" data-rule-id="r1"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                    <div class="flex items-center gap-2 bg-surface-container rounded-md px-3 py-1.5 text-xs" data-rule-id="r2">
+                      <span class="text-on-surface flex-1">长度限制</span>
+                      <span class="text-on-surface-variant/60">2~50 字符</span>
+                      <button class="btn-remove-rule text-on-surface-variant/40 hover:text-error transition-colors" data-rule-id="r2"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div id="prop-options-section" class="hidden">
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="text-xs font-medium text-on-surface-variant">选项列表</label>
+                    <button id="btn-add-option" class="text-xs text-primary font-medium hover:underline">+ 添加选项</button>
+                  </div>
+                  <div id="options-list" class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <input class="flex-1 bg-surface-container border-none rounded-md px-2 py-1.5 text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="选项1"/>
+                      <button class="btn-remove-option text-on-surface-variant/40 hover:text-error transition-colors shrink-0"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-on-surface-variant mb-1">列宽度</label>
+                  <select id="prop-field-colspan" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors">
+                    <option value="1">整行（100%）</option>
+                    <option value="2">半行（50%）</option>
+                    <option value="3">三分之一（33%）</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+    <!-- @main-content:end -->
+  </main>
+
+  <!-- 预览模态框 -->
+  <div id="preview-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-surface rounded-xl shadow-dialog w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
+        <h3 class="text-base font-semibold text-on-surface">表单预览</h3>
+        <button id="btn-close-preview" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-container text-on-surface-variant transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">姓名 <span class="text-error">*</span></label><input class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入姓名"/></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">性别 <span class="text-error">*</span></label><select class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"><option>请选择性别</option><option>男</option><option>女</option></select></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">出生日期</label><input type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"/></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">分管领导</label><div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer"><i data-lucide="user-plus" class="w-3.5 h-3.5"></i><span>点击选择人员</span></div></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">所属部门 <span class="text-error">*</span></label><div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer"><i data-lucide="building" class="w-3.5 h-3.5"></i><span>点击选择部门</span></div></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">政治面貌 <span class="text-error">*</span></label><div class="flex flex-wrap gap-3"><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="pv-pol" class="accent-primary"/> 中共党员</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="pv-pol" class="accent-primary"/> 中共预备党员</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="pv-pol" class="accent-primary"/> 共青团员</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="pv-pol" class="accent-primary"/> 群众</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" name="pv-pol" class="accent-primary"/> 民主党派</label></div></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">年龄</label><input type="number" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入年龄"/></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">个人简历</label><textarea class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" rows="3" placeholder="请输入个人简历"></textarea></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">专长领域</label><div class="flex flex-wrap gap-3"><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary"/> 纪检监察</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary"/> 审计财务</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary"/> 法律法规</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary"/> 信息技术</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary"/> 组织人事</label></div></div>
+        <div><label class="block text-sm font-medium text-on-surface mb-1.5">相关材料</label><div class="border-2 border-dashed border-outline-variant/30 rounded-lg p-4 text-center cursor-pointer hover:border-primary/40 transition-colors"><i data-lucide="upload-cloud" class="w-6 h-6 text-on-surface-variant/40 mx-auto mb-1"></i><p class="text-xs text-on-surface-variant">点击或拖拽文件到此处上传</p></div></div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-6 py-4 border-t border-outline-variant/20">
+        <button id="btn-preview-cancel" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">关闭</button>
+        <button class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all">提交</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 发布确认模态框 -->
+  <div id="publish-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-surface rounded-xl shadow-dialog max-w-md w-full p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-warning/15 flex items-center justify-center shrink-0"><i data-lucide="rocket" class="w-5 h-5 text-warning"></i></div>
+        <div><h3 class="text-base font-semibold text-on-surface">确认发布</h3><p class="text-xs text-on-surface-variant mt-0.5">发布后将生成正式版本，请确认以下信息</p></div>
+      </div>
+      <div class="bg-surface-container rounded-lg p-3 space-y-2 text-sm mb-5">
+        <div class="flex justify-between"><span class="text-on-surface-variant">表单名称</span><span class="text-on-surface font-medium">廉政档案登记表</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">字段数量</span><span class="text-on-surface font-medium">10 个</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">版本号</span><span class="text-on-surface font-medium">v2.1.0</span></div>
+        <div class="flex justify-between"><span class="text-on-surface-variant">发布环境</span><span class="text-success font-medium">正式环境</span></div>
+      </div>
+      <div class="flex items-center gap-2 justify-end">
+        <button id="btn-publish-cancel" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">取消</button>
+        <button id="btn-publish-confirm" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all">确认发布</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 版本管理模态框 -->
+  <div id="version-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-surface rounded-xl shadow-dialog max-w-lg w-full max-h-[80vh] overflow-y-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20 sticky top-0 bg-surface z-10">
+        <h3 class="text-base font-semibold text-on-surface">版本管理</h3>
+        <button id="btn-version-close" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-surface-container text-on-surface-variant transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="p-6 space-y-3">
+        <!-- 版本-1：正式版 v2.0.0 -->
+        <div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg">
+          <div class="w-10 h-10 rounded-full bg-success/15 flex items-center justify-center shrink-0"><i data-lucide="check-circle" class="w-5 h-5 text-success"></i></div>
+          <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><span class="text-sm font-semibold text-on-surface">v2.0.0</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-success/15 text-success">正式版</span></div><p class="text-xs text-on-surface-variant mt-0.5">发布于 2025-01-15 14:30 · 张书记</p></div>
+          <button class="text-xs text-primary font-medium hover:underline shrink-0">查看</button>
+        </div>
+        <!-- 版本-2：测试版 v2.1.0-beta -->
+        <div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg">
+          <div class="w-10 h-10 rounded-full bg-warning/15 flex items-center justify-center shrink-0"><i data-lucide="flask-conical" class="w-5 h-5 text-warning"></i></div>
+          <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><span class="text-sm font-semibold text-on-surface">v2.1.0-beta</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-warning/15 text-warning">测试版</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/10 text-primary">当前</span></div><p class="text-xs text-on-surface-variant mt-0.5">发布于 2025-01-20 09:15 · 张书记</p></div>
+          <button class="text-xs text-primary font-medium hover:underline shrink-0">回退</button>
+        </div>
+        <!-- 版本-3：开发版 v2.2.0-dev -->
+        <div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg">
+          <div class="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0"><i data-lucide="code" class="w-5 h-5 text-primary"></i></div>
+          <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><span class="text-sm font-semibold text-on-surface">v2.2.0-dev</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-primary/15 text-primary">开发版</span></div><p class="text-xs text-on-surface-variant mt-0.5">更新于 2025-01-22 16:45 · 张书记</p></div>
+          <button class="text-xs text-primary font-medium hover:underline shrink-0">查看</button>
+        </div>
+        <!-- 版本-4：历史版本 v1.0.0 -->
+        <div class="flex items-center gap-4 p-4 bg-surface-container rounded-lg opacity-60">
+          <div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center shrink-0"><i data-lucide="archive" class="w-5 h-5 text-on-surface-variant"></i></div>
+          <div class="flex-1 min-w-0"><div class="flex items-center gap-2"><span class="text-sm font-semibold text-on-surface">v1.0.0</span><span class="inline-flex items-center px-1.5 py-0.5 rounded-sm text-xs font-medium bg-surface-container-high text-on-surface-variant">已归档</span></div><p class="text-xs text-on-surface-variant mt-0.5">发布于 2024-12-01 10:00 · 李主任</p></div>
+          <button class="text-xs text-primary font-medium hover:underline shrink-0">查看</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast 提示 -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] bg-on-surface text-background px-5 py-3 rounded-lg shadow-float text-sm font-medium hidden transition-all">
+    <span id="toast-msg"></span>
+  </div>
+
+  <script>lucide.createIcons();</script>
+  <script>
+    $(function() {
+
+      var $currentField = $('#canvas-drop-zone .canvas-field').first();
+      $currentField.addClass('ring-2 ring-primary/30 rounded-lg');
+
+      // 画布字段选中
+      $('#canvas-drop-zone').on('click', '.canvas-field', function(e) {
+        if ($(e.target).closest('.btn-field-delete, .btn-field-copy, [title="拖拽排序"]').length) return;
+        $currentField.removeClass('ring-2 ring-primary/30 rounded-lg');
+        $currentField = $(this);
+        $currentField.addClass('ring-2 ring-primary/30 rounded-lg');
+        var fieldType = $(this).data('field-type');
+        var title = $(this).find('label').text().replace(/\\s*\\*$/, '').trim();
+        var placeholder = '';
+        if (fieldType === 'text' || fieldType === 'number') {
+          placeholder = $(this).find('input').attr('placeholder') || '';
+        } else if (fieldType === 'textarea') {
+          placeholder = $(this).find('textarea').attr('placeholder') || '';
+        }
+        $('#prop-field-id').val('field_' + title.replace(/\\s/g, '_'));
+        $('#prop-field-title').val(title);
+        $('#prop-field-placeholder').val(placeholder);
+        $('#prop-field-id-display').text('field_' + title.replace(/\\s/g, '_'));
+        var typeMap = {
+          'text': { icon: 'type', name: '单行文本' },
+          'textarea': { icon: 'align-left', name: '多行文本' },
+          'number': { icon: 'hash', name: '数字' },
+          'date': { icon: 'calendar', name: '日期' },
+          'select': { icon: 'chevron-down', name: '下拉选择' },
+          'radio': { icon: 'circle', name: '单选' },
+          'checkbox': { icon: 'check-square', name: '多选' },
+          'upload': { icon: 'paperclip', name: '附件上传' },
+          'user': { icon: 'user', name: '人员选择' },
+          'dept': { icon: 'building', name: '部门选择' }
+        };
+        var info = typeMap[fieldType] || { icon: 'type', name: '未知' };
+        $('#prop-field-icon').attr('data-lucide', info.icon);
+        $('#prop-field-type-name').text(info.name);
+        if (fieldType === 'select' || fieldType === 'radio' || fieldType === 'checkbox') {
+          $('#prop-options-section').removeClass('hidden');
+        } else {
+          $('#prop-options-section').addClass('hidden');
+        }
+        lucide.createIcons();
+      });
+
+      // 删除字段
+      $('#canvas-drop-zone').on('click', '.btn-field-delete', function() {
+        var fieldId = $(this).data('field-id');
+        var $field = $(this).closest('.canvas-field');
+        $field.slideUp(200, function() { $field.remove(); updateFieldCount(); });
+      });
+
+      // 复制字段
+      $('#canvas-drop-zone').on('click', '.btn-field-copy', function() {
+        var $field = $(this).closest('.canvas-field');
+        var $clone = $field.clone();
+        var newId = 'f' + Date.now();
+        $clone.attr('data-field-id', newId);
+        $clone.find('.btn-field-delete').attr('data-field-id', newId);
+        $clone.find('.btn-field-copy').attr('data-field-id', newId);
+        $clone.removeClass('ring-2 ring-primary/30 rounded-lg');
+        $field.after($clone);
+        updateFieldCount();
+        showToast('字段已复制');
+      });
+
+      function updateFieldCount() {
+        var count = $('#canvas-drop-zone .canvas-field').length;
+        $('#field-count').text(count + ' 个字段');
+        if (count === 0) { $('#canvas-placeholder').removeClass('hidden'); }
+        else { $('#canvas-placeholder').addClass('hidden'); }
+      }
+
+      // 组件拖拽
+      $('#component-panel').on('dragstart', '.component-item', function(e) {
+        e.originalEvent.dataTransfer.setData('text/plain', $(this).data('type'));
+        e.originalEvent.dataTransfer.effectAllowed = 'copy';
+        $(this).addClass('opacity-50');
+      });
+      $('#component-panel').on('dragend', '.component-item', function() { $(this).removeClass('opacity-50'); });
+      $('#canvas-drop-zone').on('dragover', function(e) { e.preventDefault(); e.originalEvent.dataTransfer.dropEffect = 'copy'; $(this).addClass('border-primary/30'); });
+      $('#canvas-drop-zone').on('dragleave', function() { $(this).removeClass('border-primary/30'); });
+      $('#canvas-drop-zone').on('drop', function(e) {
+        e.preventDefault();
+        $(this).removeClass('border-primary/30');
+        var fieldType = e.originalEvent.dataTransfer.getData('text/plain');
+        if (!fieldType) return;
+        addFieldToCanvas(fieldType);
+      });
+
+      function addFieldToCanvas(fieldType) {
+        var configs = {
+          'text':      { label: '文本字段', html: '<input class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入" readonly/>' },
+          'textarea':  { label: '多行文本', html: '<textarea class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors resize-none" rows="3" placeholder="请输入" readonly></textarea>' },
+          'number':    { label: '数字字段', html: '<input type="number" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="请输入数字" readonly/>' },
+          'date':      { label: '日期字段', html: '<input type="date" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" readonly/>' },
+          'select':    { label: '下拉选择', html: '<select class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" disabled><option>请选择</option></select>' },
+          'radio':     { label: '单选框组', html: '<div class="flex flex-wrap gap-4 px-1"><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" class="accent-primary" disabled/> 选项1</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="radio" class="accent-primary" disabled/> 选项2</label></div>' },
+          'checkbox':  { label: '多选框组', html: '<div class="flex flex-wrap gap-4 px-1"><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 选项1</label><label class="flex items-center gap-1.5 text-sm text-on-surface cursor-pointer"><input type="checkbox" class="accent-primary" disabled/> 选项2</label></div>' },
+          'upload':    { label: '附件上传', html: '<div class="border-2 border-dashed border-outline-variant/30 rounded-lg p-4 text-center cursor-pointer hover:border-primary/40 transition-colors"><i data-lucide="upload-cloud" class="w-6 h-6 text-on-surface-variant/40 mx-auto mb-1"></i><p class="text-xs text-on-surface-variant">点击或拖拽文件到此处上传</p></div>' },
+          'user':      { label: '人员选择', html: '<div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer"><i data-lucide="user-plus" class="w-3.5 h-3.5"></i><span>点击选择人员</span></div>' },
+          'dept':      { label: '部门选择', html: '<div class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface-variant flex items-center gap-2 cursor-pointer"><i data-lucide="building" class="w-3.5 h-3.5"></i><span>点击选择部门</span></div>' },
+          'group':     { label: '分组', html: '<div class="border border-outline-variant/20 rounded-lg p-4"><div class="text-sm font-semibold text-on-surface mb-3">分组标题</div><div class="text-xs text-on-surface-variant/50 text-center py-4">拖拽字段到此处</div></div>' },
+          'columns':   { label: '分栏', html: '<div class="grid grid-cols-2 gap-3"><div class="border border-dashed border-outline-variant/20 rounded-md p-3 text-xs text-on-surface-variant/50 text-center">左栏</div><div class="border border-dashed border-outline-variant/20 rounded-md p-3 text-xs text-on-surface-variant/50 text-center">右栏</div></div>' },
+          'tabs':      { label: '标签页', html: '<div class="border border-outline-variant/20 rounded-lg"><div class="flex border-b border-outline-variant/20"><span class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary">标签1</span><span class="px-4 py-2 text-sm text-on-surface-variant">标签2</span></div><div class="p-4 text-xs text-on-surface-variant/50 text-center">标签页内容区域</div></div>' }
+        };
+        var config = configs[fieldType] || configs['text'];
+        var newId = 'f' + Date.now();
+        var html = '<div class="canvas-field mb-4" data-field-id="' + newId + '" data-field-type="' + fieldType + '">' +
+          '<div class="flex items-center justify-between group/field hover:bg-surface-container/50 rounded-md px-2 py-1 -mx-2 mb-1.5">' +
+            '<label class="text-sm font-medium text-on-surface">' + config.label + '</label>' +
+            '<div class="flex items-center gap-1 opacity-0 group-hover/field:opacity-100 transition-opacity">' +
+              '<button class="btn-field-delete w-6 h-6 flex items-center justify-center rounded hover:bg-error/10 text-on-surface-variant hover:text-error transition-colors" data-field-id="' + newId + '" title="删除"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>' +
+              '<button class="btn-field-copy w-6 h-6 flex items-center justify-center rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" data-field-id="' + newId + '" title="复制"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>' +
+              '<span class="cursor-grab text-on-surface-variant/40 hover:text-on-surface-variant" title="拖拽排序"><i data-lucide="grip-vertical" class="w-3.5 h-3.5"></i></span>' +
+            '</div></div>' + config.html + '</div>';
+        $('#canvas-placeholder').before(html);
+        $('#canvas-placeholder').addClass('hidden');
+        lucide.createIcons();
+        updateFieldCount();
+        showToast('已添加「' + config.label + '」');
+      }
+
+      // 拖拽排序 - 仅绑定事件入口
+      // 后续应实现：1.监听 grip-vertical 的 mousedown 启动拖拽 2.计算目标位置显示插入指示线 3.释放时移动字段到目标位置 4.支持跨分组/分栏拖拽
+      $('#canvas-drop-zone').on('mousedown', '[title="拖拽排序"]', function(e) {
+        console.log('拖拽排序开始 - 字段ID:', $(this).closest('.canvas-field').data('field-id'));
+      });
+
+      // 布局切换
+      function setLayoutActive($btn) {
+        $('#layout-single, #layout-double, #layout-triple').removeClass('bg-primary text-on-primary').addClass('bg-surface-container text-on-surface-variant');
+        $btn.removeClass('bg-surface-container text-on-surface-variant').addClass('bg-primary text-on-primary');
+      }
+      $('#layout-single').on('click', function() { setLayoutActive($(this)); showToast('已切换为单列布局'); });
+      $('#layout-double').on('click', function() { setLayoutActive($(this)); showToast('已切换为双列布局'); });
+      $('#layout-triple').on('click', function() { setLayoutActive($(this)); showToast('已切换为三列布局'); });
+
+      // 清空画布
+      $('#btn-clear-canvas').on('click', function() {
+        if ($('#canvas-drop-zone .canvas-field').length === 0) return;
+        if (confirm('确定要清空画布中的所有字段吗？此操作不可撤销。')) {
+          $('#canvas-drop-zone .canvas-field').remove();
+          $('#canvas-placeholder').removeClass('hidden');
+          updateFieldCount();
+          showToast('画布已清空');
+        }
+      });
+
+      // 属性面板：必填/只读切换
+      $('#prop-field-required').on('click', function() {
+        var $btn = $(this);
+        var isChecked = $btn.attr('aria-checked') === 'true';
+        if (isChecked) { $btn.attr('aria-checked', 'false').removeClass('bg-primary').addClass('bg-outline-variant/40'); $btn.find('span').removeClass('translate-x-4'); }
+        else { $btn.attr('aria-checked', 'true').removeClass('bg-outline-variant/40').addClass('bg-primary'); $btn.find('span').addClass('translate-x-4'); }
+      });
+      $('#prop-field-readonly').on('click', function() {
+        var $btn = $(this);
+        var isChecked = $btn.attr('aria-checked') === 'true';
+        if (isChecked) { $btn.attr('aria-checked', 'false').removeClass('bg-primary').addClass('bg-outline-variant/40'); $btn.find('span').removeClass('translate-x-4'); }
+        else { $btn.attr('aria-checked', 'true').removeClass('bg-outline-variant/40').addClass('bg-primary'); $btn.find('span').addClass('translate-x-4'); }
+      });
+
+      // 删除校验规则
+      $('#validation-rules').on('click', '.btn-remove-rule', function() {
+        $(this).closest('[data-rule-id]').slideUp(200, function() { $(this).remove(); });
+      });
+
+      // 添加校验规则 - 后续应实现：1.弹出规则类型选择器（必填/长度/正则/数值范围/自定义）2.根据规则类型显示参数配置表单 3.确认后添加到列表 4.支持编辑和删除
+      $('#btn-add-rule').on('click', function() { console.log('添加校验规则'); showToast('校验规则配置功能开发中'); });
+
+      // 添加/删除选项
+      $('#btn-add-option').on('click', function() {
+        var html = '<div class="flex items-center gap-2"><input class="flex-1 bg-surface-container border-none rounded-md px-2 py-1.5 text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" value="新选项"/><button class="btn-remove-option text-on-surface-variant/40 hover:text-error transition-colors shrink-0"><i data-lucide="x" class="w-3 h-3"></i></button></div>';
+        $('#options-list').append(html); lucide.createIcons();
+      });
+      $('#options-list').on('click', '.btn-remove-option', function() { $(this).closest('.flex').remove(); });
+
+      // 组件搜索
+      $('#component-search').on('input', function() {
+        var keyword = $(this).val().toLowerCase();
+        $('.component-item').each(function() {
+          if ($(this).text().toLowerCase().indexOf(keyword) > -1) { $(this).show(); } else { $(this).hide(); }
+        });
+      });
+
+      // 预览模态框
+      $('#btn-preview').on('click', function() { $('#preview-modal').removeClass('hidden'); lucide.createIcons(); });
+      $('#btn-close-preview, #btn-preview-cancel').on('click', function() { $('#preview-modal').addClass('hidden'); });
+      $('#preview-modal').on('click', function(e) { if ($(e.target).is('#preview-modal')) $(this).addClass('hidden'); });
+
+      // 发布模态框
+      $('#btn-publish').on('click', function() { $('#publish-modal').removeClass('hidden'); });
+      $('#btn-publish-cancel').on('click', function() { $('#publish-modal').addClass('hidden'); });
+      $('#btn-publish-confirm').on('click', function() { $('#publish-modal').addClass('hidden'); showToast('表单发布成功！版本号：v2.1.0'); });
+      $('#publish-modal').on('click', function(e) { if ($(e.target).is('#publish-modal')) $(this).addClass('hidden'); });
+
+      // 版本管理模态框
+      $('#btn-version').on('click', function() { $('#version-modal').removeClass('hidden'); lucide.createIcons(); });
+      $('#btn-version-close').on('click', function() { $('#version-modal').addClass('hidden'); });
+      $('#version-modal').on('click', function(e) { if ($(e.target).is('#version-modal')) $(this).addClass('hidden'); });
+
+      // 保存
+      $('#btn-save').on('click', function() { showToast('表单设计已保存'); });
+
+      // Toast
+      function showToast(msg) {
+        $('#toast-msg').text(msg);
+        $('#toast').removeClass('hidden').addClass('opacity-100');
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(function() { $('#toast').addClass('hidden'); }, 2000);
+      }
+
+      // 键盘快捷键
+      $(document).on('keydown', function(e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); $('#btn-save').trigger('click'); }
+        if (e.key === 'Escape') { $('#preview-modal, #publish-modal, #version-modal').addClass('hidden'); }
+      });
+
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 字体：Inter + Noto Sans SC（教育风圆润现代无衬线） -->
+  <link href="https://lf-code-agent.coze.cn/obj/x-ai-cn/fonts/google/google-all-fonts.css" rel="stylesheet"/>
+
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/jquery/jquery-3.7.1.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/lucide/lucide-1.11.0.min.js"></script>
+  <script src="https://lf-code-agent.coze.cn/obj/x-ai-cn/cdn/tailwindcss/tailwindcss-browser-4.2.4.min.js"></script>
+
+  <style type="text/tailwindcss">
+    @theme {
+      /* === 品牌色（教育风蓝绿主色，融合政务严肃感） === */
+      --color-primary:              #0D9488;
+      --color-primary-container:    #CCFBF1;
+      --color-on-primary:           #ffffff;
+      --color-on-primary-container: #134E4A;
+      /* === 背景 / 表面（米白基调，微暖学术氛围） === */
+      --color-background:                 #FEFDFB;
+      --color-surface-container-lowest:   #F8F7F4;
+      --color-surface:                    #FFFFFF;
+      --color-surface-container:          #F0FDFA;
+      --color-surface-container-high:     #E8F5F1;
+      --color-surface-container-highest:  #DCE8E4;
+      /* === 文字 === */
+      --color-on-surface:           #1C1917;
+      --color-on-surface-variant:   #78716C;
+      /* === 功能色 === */
+      --color-success:  #22c55e;
+      --color-error:    #ef4444;
+      --color-warning:  #f59e0b;
+      /* === 边框 === */
+      --color-outline:          #D6D3D1;
+      --color-outline-variant:  #E7E5E4;
+      /* === 圆角（教育风大圆角，亲和圆润） === */
+      --radius-sm:   0.5rem;
+      --radius-md:   0.75rem;
+      --radius-lg:   1rem;
+      --radius-xl:   1.25rem;
+      --radius-2xl:  1.5rem;
+      --radius-full: 9999px;
+      /* === 阴影（柔和弥散，教育风轻盈感） === */
+      --shadow-card:   0 2px 12px rgba(0,0,0,0.09);
+      --shadow-float:  0 8px 30px rgba(0,0,0,0.08);
+      --shadow-dialog: 0 20px 60px rgba(0,0,0,0.12);
+      /* === 字体 === */
+      --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+    }
+  </style>
+
+  <!-- 图片兜底 -->
+  <script>
+    document.addEventListener('error', function (e) {
+      const img = e.target;
+      if (img.tagName !== 'IMG' || img.dataset.fallback) return;
+      img.dataset.fallback = '1';
+      const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const cat = img.getAttribute('data-category') || '其他';
+      const alt = img.getAttribute('alt') || '';
+      const label = esc(alt.length > 8 ? alt.slice(0, 8) + '…' : alt);
+      const icons = { '人物': '👤', '自然风景': '🏞', '动物': '🐾', '建筑城市': '🏙', '运动体育': '⚽', '交通工具': '🚗', '食物': '🍽', '服饰时尚': '👗', '商业科技': '💼', '游戏娱乐': '🎮', '艺术': '🎨', '其他': '🖼' };
+      const icon = icons[cat] || '🖼';
+      const w = img.width || 400, h = img.height || 300;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="45%" text-anchor="middle" font-size="${Math.min(w, h) * 0.18}" dominant-baseline="central">${icon}</text><text x="50%" y="68%" text-anchor="middle" font-size="${Math.min(w, h) * 0.07}" fill="%239ca3af" font-family="system-ui,sans-serif" dominant-baseline="central">${label}</text></svg>`;
+      img.src = 'data:image/svg+xml,' + svg;
+    }, true);
+  </script>
+</head>
+
+<body class="bg-background text-on-surface font-sans">
+
+  <!-- @nav:start 导航组件 -->
+  <div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-surface flex flex-col border-r border-outline-variant/20 shrink-0 overflow-y-auto">
+      <div class="h-14 flex items-center gap-2.5 px-5 border-b border-outline-variant/20 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
+          <i data-lucide="shield-check" class="w-5 h-5 text-on-primary"></i>
+        </div>
+        <span class="font-semibold text-sm text-on-surface whitespace-nowrap">艺旅清风</span>
+      </div>
+      <nav class="flex-1 px-3 py-3 space-y-0.5 text-sm">
+        <a href="home.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-dashboard" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>廉政概览</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">档案管理</div>
+        <a href="archive-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="folder-open" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>档案列表</span>
+        </a>
+        <a href="archive-opinion.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-square-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>意见管理</span>
+        </a>
+        <a href="archive-recycle.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="trash" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>回收站</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">AI 分析</div>
+        <a href="ai-chat.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bot" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 智能对话</span>
+        </a>
+        <a href="ai-alert.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="bell-ring" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 预警分析</span>
+        </a>
+        <a href="ai-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-text" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>AI 分析报告</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">案件管理</div>
+        <a href="case-overview.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程总览</span>
+        </a>
+        <a href="case-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="inbox" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访举报</span>
+        </a>
+        <a href="case-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="search" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索处置</span>
+        </a>
+        <a href="case-talk.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="message-circle" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>谈话函询</span>
+        </a>
+        <a href="case-verify.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="clipboard-check" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>初步核实</span>
+        </a>
+        <a href="case-review.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="gavel" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>立案审查</span>
+        </a>
+        <a href="case-trial.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>案件审理</span>
+        </a>
+        <a href="case-recheck.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="rotate-ccw" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>复议复查</span>
+        </a>
+        <a href="case-reform.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="lightbulb" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>以案促改</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">台账管理</div>
+        <a href="ledger-report.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="file-bar-chart" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>信访台账</span>
+        </a>
+        <a href="ledger-clue.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-filter" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>线索台账</span>
+        </a>
+        <a href="ledger-dispose.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="list-checks" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处置台账</span>
+        </a>
+        <a href="ledger-punish.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="scale" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>处分台账</span>
+        </a>
+        <div class="pt-2 pb-1 px-3 text-xs font-medium text-on-surface-variant/60 uppercase tracking-wider">低代码平台</div>
+        <a href="lowcode-form.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="form-input" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>表单设计器</span>
+        </a>
+        <a href="lowcode-list.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="layout-list" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>列表设计器</span>
+        </a>
+        <a href="lowcode-flow.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="workflow" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>流程设计器</span>
+        </a>
+        <a href="lowcode-perm.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md bg-primary/10 text-primary font-medium text-sm" aria-current="page">
+          <i data-lucide="shield" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>权限配置</span>
+        </a>
+        <a href="lowcode-version.html" class="flex items-center gap-2.5 px-3 py-2 rounded-md text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors">
+          <i data-lucide="git-branch-plus" class="w-4.5 h-4.5 shrink-0"></i>
+          <span>版本管理</span>
+        </a>
+      </nav>
+      <div class="p-3 border-t border-outline-variant/20">
+        <div class="flex items-center gap-2.5 px-3 py-2 text-sm text-on-surface-variant">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container">张</div>
+          <span>张书记</span>
+        </div>
+      </div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 min-w-0 overflow-y-auto">
+    <!-- @nav:end 导航组件 -->
+    <!-- @main-content:start -->
+
+      <!-- 顶部工具栏 -->
+      <div class="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b border-outline-variant/20 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h1 class="text-xl font-bold text-on-surface">权限配置</h1>
+          <span class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-sm">低代码平台</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-reset" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>重置
+          </button>
+          <button id="btn-save" class="bg-primary text-on-primary px-4 py-2 rounded-md text-sm font-medium hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>保存配置
+          </button>
+        </div>
+      </div>
+
+      <!-- 三栏布局主体 -->
+      <div class="flex h-[calc(100vh-8.5rem)]">
+        <!-- 左侧：角色列表 -->
+        <div class="w-56 shrink-0 border-r border-outline-variant/20 bg-surface-container-lowest overflow-y-auto">
+          <div class="px-4 py-3 border-b border-outline-variant/20">
+            <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">角色列表</span>
+          </div>
+          <div id="role-list" class="py-1">
+            <!-- 角色-超级管理员 -->
+            <div class="role-item px-4 py-2.5 cursor-pointer bg-primary/10 border-l-3 border-primary mx-1 rounded-r-md" data-role="super-admin" id="role-super-admin">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="shield-check" class="w-4 h-4 text-primary shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-primary">超级管理员</div>
+                  <div class="text-xs text-on-surface-variant">super_admin</div>
+                </div>
+              </div>
+            </div>
+            <!-- 角色-系统管理员 -->
+            <div class="role-item px-4 py-2.5 cursor-pointer hover:bg-surface-container transition-colors mx-1 rounded-r-md" data-role="system-admin" id="role-system-admin">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="user-cog" class="w-4 h-4 text-on-surface-variant shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-on-surface">系统管理员</div>
+                  <div class="text-xs text-on-surface-variant">system_admin</div>
+                </div>
+              </div>
+            </div>
+            <!-- 角色-纪检干部 -->
+            <div class="role-item px-4 py-2.5 cursor-pointer hover:bg-surface-container transition-colors mx-1 rounded-r-md" data-role="inspector" id="role-inspector">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="user-check" class="w-4 h-4 text-on-surface-variant shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-on-surface">纪检干部</div>
+                  <div class="text-xs text-on-surface-variant">inspector</div>
+                </div>
+              </div>
+            </div>
+            <!-- 角色-普通用户 -->
+            <div class="role-item px-4 py-2.5 cursor-pointer hover:bg-surface-container transition-colors mx-1 rounded-r-md" data-role="normal-user" id="role-normal-user">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="user" class="w-4 h-4 text-on-surface-variant shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-on-surface">普通用户</div>
+                  <div class="text-xs text-on-surface-variant">normal_user</div>
+                </div>
+              </div>
+            </div>
+            <!-- 角色-审计员 -->
+            <div class="role-item px-4 py-2.5 cursor-pointer hover:bg-surface-container transition-colors mx-1 rounded-r-md" data-role="auditor" id="role-auditor">
+              <div class="flex items-center gap-2.5">
+                <i data-lucide="scan-eye" class="w-4 h-4 text-on-surface-variant shrink-0"></i>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium text-on-surface">审计员</div>
+                  <div class="text-xs text-on-surface-variant">auditor</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中间：权限矩阵 -->
+        <div class="flex-1 min-w-0 overflow-y-auto bg-surface">
+          <div class="px-6 py-4 border-b border-outline-variant/20 flex items-center justify-between">
+            <div>
+              <h2 id="current-role-name" class="text-base font-semibold text-on-surface">超级管理员</h2>
+              <p class="text-xs text-on-surface-variant mt-0.5">配置该角色在各模块中的操作权限</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="flex items-center gap-2 text-sm text-on-surface-variant cursor-pointer">
+                <input type="checkbox" id="chk-show-all" class="w-4 h-4 rounded accent-primary" checked />
+                <span>显示已授权</span>
+              </label>
+              <button id="btn-expand-all" class="text-xs text-primary font-medium hover:underline">展开全部</button>
+              <button id="btn-collapse-all" class="text-xs text-on-surface-variant font-medium hover:text-on-surface hover:underline">收起全部</button>
+            </div>
+          </div>
+          <div id="perm-matrix" class="p-6 space-y-5">
+
+            <!-- 模块1：个人档案 -->
+            <div class="perm-module bg-surface rounded-lg border border-outline-variant/20 overflow-hidden" id="module-archive">
+              <div class="flex items-center justify-between px-4 py-3 bg-surface-container cursor-pointer" id="module-header-archive">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant module-arrow transition-transform"></i>
+                  <i data-lucide="folder-open" class="w-4 h-4 text-primary"></i>
+                  <span class="text-sm font-semibold text-on-surface">个人档案</span>
+                </div>
+                <span class="text-xs text-on-surface-variant">6 项权限</span>
+              </div>
+              <div class="module-body px-4 py-3 space-y-2.5">
+                <!-- 权限-查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="eye" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">查看</div>
+                      <div class="text-xs text-on-surface-variant">查看档案基本信息与详情</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="view" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-新增 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">新增</div>
+                      <div class="text-xs text-on-surface-variant">创建新的档案记录</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="create" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-编辑 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="pencil" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">编辑</div>
+                      <div class="text-xs text-on-surface-variant">修改已有档案信息</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="edit" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-删除 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">删除</div>
+                      <div class="text-xs text-on-surface-variant">删除档案记录（可回收）</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="delete" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-导出 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="download" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">导出</div>
+                      <div class="text-xs text-on-surface-variant">导出档案数据为 Excel/PDF</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="export" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-审批 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="clipboard-check" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">审批</div>
+                      <div class="text-xs text-on-surface-variant">审批档案变更与意见申请</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="archive" data-perm="approve" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模块2：AI助手 -->
+            <div class="perm-module bg-surface rounded-lg border border-outline-variant/20 overflow-hidden" id="module-ai">
+              <div class="flex items-center justify-between px-4 py-3 bg-surface-container cursor-pointer" id="module-header-ai">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant module-arrow transition-transform"></i>
+                  <i data-lucide="bot" class="w-4 h-4 text-primary"></i>
+                  <span class="text-sm font-semibold text-on-surface">AI 助手</span>
+                </div>
+                <span class="text-xs text-on-surface-variant">5 项权限</span>
+              </div>
+              <div class="module-body px-4 py-3 space-y-2.5">
+                <!-- 权限-查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="eye" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">查看</div>
+                      <div class="text-xs text-on-surface-variant">访问 AI 分析功能页面</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ai" data-perm="view" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-对话 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="message-circle" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">AI 对话</div>
+                      <div class="text-xs text-on-surface-variant">使用 AI 智能对话分析功能</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ai" data-perm="chat" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-预警查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">预警查看</div>
+                      <div class="text-xs text-on-surface-variant">查看 AI 预警分析结果</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ai" data-perm="alert" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-报告生成 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="file-text" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">报告生成</div>
+                      <div class="text-xs text-on-surface-variant">生成并导出 AI 分析报告</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ai" data-perm="report" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-导出 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="download" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">导出</div>
+                      <div class="text-xs text-on-surface-variant">导出分析结果与报告</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ai" data-perm="export" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模块3：案件管理 -->
+            <div class="perm-module bg-surface rounded-lg border border-outline-variant/20 overflow-hidden" id="module-case">
+              <div class="flex items-center justify-between px-4 py-3 bg-surface-container cursor-pointer" id="module-header-case">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant module-arrow transition-transform"></i>
+                  <i data-lucide="git-branch" class="w-4 h-4 text-primary"></i>
+                  <span class="text-sm font-semibold text-on-surface">案件管理</span>
+                </div>
+                <span class="text-xs text-on-surface-variant">6 项权限</span>
+              </div>
+              <div class="module-body px-4 py-3 space-y-2.5">
+                <!-- 权限-查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="eye" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">查看</div>
+                      <div class="text-xs text-on-surface-variant">查看案件流程与详情</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="view" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-新增 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">新增</div>
+                      <div class="text-xs text-on-surface-variant">受理登记新案件</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="create" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-编辑 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="pencil" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">编辑</div>
+                      <div class="text-xs text-on-surface-variant">修改案件各阶段信息</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="edit" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-删除 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">删除</div>
+                      <div class="text-xs text-on-surface-variant">删除案件记录</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="delete" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-导出 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="download" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">导出</div>
+                      <div class="text-xs text-on-surface-variant">导出案件数据</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="export" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-审批 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="clipboard-check" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">审批</div>
+                      <div class="text-xs text-on-surface-variant">审批案件各阶段流转</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="case" data-perm="approve" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模块4：台账管理 -->
+            <div class="perm-module bg-surface rounded-lg border border-outline-variant/20 overflow-hidden" id="module-ledger">
+              <div class="flex items-center justify-between px-4 py-3 bg-surface-container cursor-pointer" id="module-header-ledger">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant module-arrow transition-transform"></i>
+                  <i data-lucide="file-bar-chart" class="w-4 h-4 text-primary"></i>
+                  <span class="text-sm font-semibold text-on-surface">台账管理</span>
+                </div>
+                <span class="text-xs text-on-surface-variant">5 项权限</span>
+              </div>
+              <div class="module-body px-4 py-3 space-y-2.5">
+                <!-- 权限-查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="eye" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">查看</div>
+                      <div class="text-xs text-on-surface-variant">查看各类台账数据</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ledger" data-perm="view" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-新增 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="plus-circle" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">新增</div>
+                      <div class="text-xs text-on-surface-variant">录入台账记录</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ledger" data-perm="create" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-编辑 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="pencil" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">编辑</div>
+                      <div class="text-xs text-on-surface-variant">修改台账记录</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ledger" data-perm="edit" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-删除 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="trash-2" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">删除</div>
+                      <div class="text-xs text-on-surface-variant">删除台账记录</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ledger" data-perm="delete" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-导出 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="download" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">导出</div>
+                      <div class="text-xs text-on-surface-variant">导出台账为 Excel</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="ledger" data-perm="export" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模块5：低代码平台 -->
+            <div class="perm-module bg-surface rounded-lg border border-outline-variant/20 overflow-hidden" id="module-lowcode">
+              <div class="flex items-center justify-between px-4 py-3 bg-surface-container cursor-pointer" id="module-header-lowcode">
+                <div class="flex items-center gap-2.5">
+                  <i data-lucide="chevron-down" class="w-4 h-4 text-on-surface-variant module-arrow transition-transform"></i>
+                  <i data-lucide="code-2" class="w-4 h-4 text-primary"></i>
+                  <span class="text-sm font-semibold text-on-surface">低代码平台</span>
+                </div>
+                <span class="text-xs text-on-surface-variant">6 项权限</span>
+              </div>
+              <div class="module-body px-4 py-3 space-y-2.5">
+                <!-- 权限-查看 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="eye" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">查看</div>
+                      <div class="text-xs text-on-surface-variant">访问低代码平台功能</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="view" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-表单设计 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="form-input" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">表单设计</div>
+                      <div class="text-xs text-on-surface-variant">使用表单设计器创建/编辑表单</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="form" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-列表设计 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="layout-list" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">列表设计</div>
+                      <div class="text-xs text-on-surface-variant">使用列表设计器配置数据列表</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="list" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-流程设计 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="workflow" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">流程设计</div>
+                      <div class="text-xs text-on-surface-variant">使用流程设计器编排审批流程</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="flow" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-版本管理 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="git-branch-plus" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">版本管理</div>
+                      <div class="text-xs text-on-surface-variant">管理应用版本发布与回退</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="version" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+                <!-- 权限-权限配置 -->
+                <div class="flex items-center justify-between py-2 px-3 rounded-md hover:bg-surface-container/50 transition-colors">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="shield" class="w-4 h-4 text-on-surface-variant"></i>
+                    <div>
+                      <div class="text-sm font-medium text-on-surface">权限配置</div>
+                      <div class="text-xs text-on-surface-variant">配置角色与模块权限</div>
+                    </div>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer perm-toggle" data-module="lowcode" data-perm="perm" checked />
+                    <div class="w-9 h-5 bg-outline-variant/40 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/20 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-4"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 右侧：角色成员管理 -->
+        <div class="w-64 shrink-0 border-l border-outline-variant/20 bg-surface-container-lowest overflow-y-auto flex flex-col">
+          <div class="px-4 py-3 border-b border-outline-variant/20 flex items-center justify-between">
+            <span class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">角色成员</span>
+            <span id="member-count" class="text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">5 人</span>
+          </div>
+          <!-- 添加成员按钮 -->
+          <div class="px-3 py-2">
+            <button id="btn-add-member" class="w-full bg-surface-container text-on-surface border-none px-3 py-2 rounded-md text-xs font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>添加成员
+            </button>
+          </div>
+          <!-- 成员列表 -->
+          <div id="member-list" class="flex-1 overflow-y-auto px-2 space-y-0.5">
+            <!-- 成员-张建国 -->
+            <div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="1">
+              <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">张</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface truncate">张建国</div>
+                <div class="text-xs text-on-surface-variant">zhangjg</div>
+              </div>
+              <button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="1" title="移除成员">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <!-- 成员-李明辉 -->
+            <div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="2">
+              <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">李</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface truncate">李明辉</div>
+                <div class="text-xs text-on-surface-variant">limh</div>
+              </div>
+              <button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="2" title="移除成员">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <!-- 成员-王芳 -->
+            <div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="3">
+              <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">王</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface truncate">王芳</div>
+                <div class="text-xs text-on-surface-variant">wangf</div>
+              </div>
+              <button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="3" title="移除成员">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <!-- 成员-陈志远 -->
+            <div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="4">
+              <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">陈</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface truncate">陈志远</div>
+                <div class="text-xs text-on-surface-variant">chenzy</div>
+              </div>
+              <button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="4" title="移除成员">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+            <!-- 成员-赵雪梅 -->
+            <div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="5">
+              <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">赵</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface truncate">赵雪梅</div>
+                <div class="text-xs text-on-surface-variant">zhaoxm</div>
+              </div>
+              <button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="5" title="移除成员">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 添加成员弹窗 -->
+      <div id="modal-add-member" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-surface rounded-xl shadow-dialog max-w-md w-full max-h-[90vh] overflow-y-auto p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-on-surface">添加成员</h3>
+            <button id="btn-close-modal" class="text-on-surface-variant hover:text-on-surface transition-colors">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div class="mb-4">
+            <label class="text-xs font-medium text-on-surface-variant mb-1.5 block">搜索用户</label>
+            <input id="input-search-user" class="w-full bg-surface-container border-none rounded-md px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors" placeholder="输入姓名或账号搜索..." />
+          </div>
+          <div id="user-search-results" class="space-y-1 max-h-60 overflow-y-auto mb-4">
+            <!-- 搜索结果-刘伟 -->
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-surface-container transition-colors cursor-pointer user-candidate" data-user-id="101">
+              <div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-semibold text-on-surface-variant shrink-0">刘</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface">刘伟</div>
+                <div class="text-xs text-on-surface-variant">liuw</div>
+              </div>
+              <button class="btn-add-user text-primary text-xs font-medium hover:underline shrink-0">添加</button>
+            </div>
+            <!-- 搜索结果-孙丽华 -->
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-surface-container transition-colors cursor-pointer user-candidate" data-user-id="102">
+              <div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-semibold text-on-surface-variant shrink-0">孙</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface">孙丽华</div>
+                <div class="text-xs text-on-surface-variant">sunlh</div>
+              </div>
+              <button class="btn-add-user text-primary text-xs font-medium hover:underline shrink-0">添加</button>
+            </div>
+            <!-- 搜索结果-周文博 -->
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-surface-container transition-colors cursor-pointer user-candidate" data-user-id="103">
+              <div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-semibold text-on-surface-variant shrink-0">周</div>
+              <div class="min-w-0 flex-1">
+                <div class="text-sm font-medium text-on-surface">周文博</div>
+                <div class="text-xs text-on-surface-variant">zhouwb</div>
+              </div>
+              <button class="btn-add-user text-primary text-xs font-medium hover:underline shrink-0">添加</button>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <button id="btn-cancel-add" class="bg-surface-container text-on-surface border-none px-4 py-2 rounded-md text-sm font-medium hover:bg-surface-container-high active:scale-[0.98] transition-all">关闭</button>
+          </div>
+        </div>
+      </div>
+
+    <!-- @main-content:end -->
+  </main>
+
+  <script>
+    $(function() {
+
+      // ========== 角色切换 ==========
+      // 点击角色列表项时：
+      // 1. 移除所有角色项的激活样式，为当前点击项添加激活样式
+      // 2. 更新中间权限矩阵标题为对应角色名称
+      // 3. 根据角色加载不同的权限配置（此处为原型，仅切换 UI 状态）
+      // 4. 更新右侧成员列表为对应角色的成员
+      $('#role-list').on('click', '.role-item', function() {
+        var $this = $(this);
+        var roleName = $this.find('.text-sm.font-medium').text();
+        var roleCode = $this.data('role');
+
+        // 更新激活样式
+        $('.role-item').removeClass('bg-primary/10 border-l-3 border-primary');
+        $('.role-item').find('.text-sm.font-medium').removeClass('text-primary').addClass('text-on-surface');
+        $('.role-item').find('i').removeClass('text-primary').addClass('text-on-surface-variant');
+
+        $this.addClass('bg-primary/10 border-l-3 border-primary');
+        $this.find('.text-sm.font-medium').removeClass('text-on-surface').addClass('text-primary');
+        $this.find('i').removeClass('text-on-surface-variant').addClass('text-primary');
+
+        // 更新标题
+        $('#current-role-name').text(roleName);
+
+        // 根据角色切换权限开关状态（原型演示：超级管理员全部开启，其他角色部分关闭）
+        if (roleCode === 'super-admin') {
+          $('.perm-toggle').prop('checked', true);
+        } else if (roleCode === 'system-admin') {
+          $('.perm-toggle').prop('checked', true);
+          // 系统管理员无删除权限
+          $('.perm-toggle[data-perm="delete"]').prop('checked', false);
+        } else if (roleCode === 'inspector') {
+          $('.perm-toggle').prop('checked', false);
+          // 纪检干部仅有查看和导出权限
+          $('.perm-toggle[data-perm="view"]').prop('checked', true);
+          $('.perm-toggle[data-perm="export"]').prop('checked', true);
+        } else if (roleCode === 'normal-user') {
+          $('.perm-toggle').prop('checked', false);
+          // 普通用户仅有查看权限
+          $('.perm-toggle[data-perm="view"]').prop('checked', true);
+        } else if (roleCode === 'auditor') {
+          $('.perm-toggle').prop('checked', false);
+          // 审计员有查看和导出权限
+          $('.perm-toggle[data-perm="view"]').prop('checked', true);
+          $('.perm-toggle[data-perm="export"]').prop('checked', true);
+        }
+
+        console.log('切换到角色:', roleName, '(' + roleCode + ')');
+      });
+
+      // ========== 模块折叠/展开 ==========
+      // 点击模块标题时：
+      // 1. 切换模块 body 的显示/隐藏
+      // 2. 旋转箭头图标 180 度
+      $('#perm-matrix').on('click', '.perm-module > div:first-child', function() {
+        var $module = $(this).closest('.perm-module');
+        var $body = $module.find('.module-body');
+        var $arrow = $(this).find('.module-arrow');
+
+        $body.slideToggle(200);
+        $arrow.toggleClass('rotate-180');
+      });
+
+      // ========== 展开全部 / 收起全部 ==========
+      $('#btn-expand-all').on('click', function() {
+        $('.module-body').slideDown(200);
+        $('.module-arrow').removeClass('rotate-180');
+      });
+
+      $('#btn-collapse-all').on('click', function() {
+        $('.module-body').slideUp(200);
+        $('.module-arrow').addClass('rotate-180');
+      });
+
+      // ========== 权限开关变更 ==========
+      // 切换权限开关时记录变更状态，保存时统一提交
+      $('#perm-matrix').on('change', '.perm-toggle', function() {
+        var module = $(this).data('module');
+        var perm = $(this).data('perm');
+        var checked = $(this).prop('checked');
+        console.log('权限变更 - 模块:', module, '权限:', perm, '状态:', checked ? '开启' : '关闭');
+      });
+
+      // ========== 保存配置 ==========
+      // 点击保存按钮时：
+      // 1. 收集当前角色所有权限开关的状态
+      // 2. 构建权限配置 JSON 对象
+      // 3. 调用后端接口保存（原型阶段仅 Toast 提示）
+      // 4. 显示保存成功反馈
+      $('#btn-save').on('click', function() {
+        var roleName = $('#current-role-name').text();
+        var permissions = {};
+        $('.perm-toggle').each(function() {
+          var module = $(this).data('module');
+          var perm = $(this).data('perm');
+          if (!permissions[module]) permissions[module] = {};
+          permissions[module][perm] = $(this).prop('checked');
+        });
+
+        console.log('保存权限配置 - 角色:', roleName);
+        console.log('权限数据:', JSON.stringify(permissions, null, 2));
+
+        // 显示保存成功提示
+        var $btn = $(this);
+        var originalHtml = $btn.html();
+        $btn.html('<i data-lucide="check" class="w-3.5 h-3.5"></i>已保存');
+        $btn.addClass('bg-success');
+        lucide.createIcons();
+
+        setTimeout(function() {
+          $btn.html(originalHtml);
+          $btn.removeClass('bg-success');
+          lucide.createIcons();
+        }, 2000);
+      });
+
+      // ========== 重置配置 ==========
+      // 点击重置按钮时：
+      // 1. 弹出确认对话框
+      // 2. 确认后将当前角色权限恢复为默认值
+      // 3. 重新渲染权限开关状态
+      $('#btn-reset').on('click', function() {
+        if (confirm('确定要重置当前角色的权限配置吗？此操作将恢复为默认权限设置。')) {
+          // 重置为超级管理员默认全开
+          $('.perm-toggle').prop('checked', true);
+          console.log('权限配置已重置为默认值');
+        }
+      });
+
+      // ========== 移除成员 ==========
+      // 点击移除按钮时：
+      // 1. 弹出确认对话框
+      // 2. 确认后从成员列表中移除该成员节点
+      // 3. 更新成员计数
+      // 4. 调用后端接口同步（原型阶段仅前端移除）
+      $('#member-list').on('click', '.btn-remove-member', function(e) {
+        e.stopPropagation();
+        var $member = $(this).closest('.member-item');
+        var memberName = $member.find('.text-sm.font-medium').text();
+
+        if (confirm('确定要将 "' + memberName + '" 从当前角色中移除吗？')) {
+          $member.fadeOut(300, function() {
+            $(this).remove();
+            var count = $('#member-list .member-item').length;
+            $('#member-count').text(count + ' 人');
+            console.log('已移除成员:', memberName);
+          });
+        }
+      });
+
+      // ========== 添加成员弹窗 ==========
+      $('#btn-add-member').on('click', function() {
+        $('#modal-add-member').removeClass('hidden');
+      });
+
+      $('#btn-close-modal, #btn-cancel-add').on('click', function() {
+        $('#modal-add-member').addClass('hidden');
+      });
+
+      // 点击遮罩关闭弹窗
+      $('#modal-add-member').on('click', function(e) {
+        if ($(e.target).is('#modal-add-member')) {
+          $(this).addClass('hidden');
+        }
+      });
+
+      // ========== 添加用户到成员列表 ==========
+      // 点击"添加"按钮时：
+      // 1. 检查该用户是否已在成员列表中（去重）
+      // 2. 若已存在则提示"该用户已是当前角色成员"
+      // 3. 若不存在则创建新成员节点追加到成员列表
+      // 4. 更新成员计数
+      // 5. 调用后端接口同步（原型阶段仅前端操作）
+      $('#user-search-results').on('click', '.btn-add-user', function(e) {
+        e.stopPropagation();
+        var $candidate = $(this).closest('.user-candidate');
+        var userName = $candidate.find('.text-sm.font-medium').text();
+        var userAccount = $candidate.find('.text-xs').text();
+        var firstChar = userName.charAt(0);
+
+        // 检查是否已存在
+        var exists = false;
+        $('#member-list .member-item').each(function() {
+          if ($(this).find('.text-sm.font-medium').text() === userName) {
+            exists = true;
+            return false;
+          }
+        });
+
+        if (exists) {
+          alert('该用户 "' + userName + '" 已是当前角色成员，无需重复添加。');
+          return;
+        }
+
+        // 生成新成员 ID
+        var newId = 'new-' + Date.now();
+
+        // 创建新成员节点
+        var $newMember = $(
+          '<div class="member-item flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-surface-container transition-colors group" data-member-id="' + newId + '">' +
+            '<div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-xs font-semibold text-on-primary-container shrink-0">' + firstChar + '</div>' +
+            '<div class="min-w-0 flex-1">' +
+              '<div class="text-sm font-medium text-on-surface truncate">' + userName + '</div>' +
+              '<div class="text-xs text-on-surface-variant">' + userAccount + '</div>' +
+            '</div>' +
+            '<button class="btn-remove-member opacity-0 group-hover:opacity-100 text-on-surface-variant hover:text-error transition-all shrink-0" data-member-id="' + newId + '" title="移除成员">' +
+              '<i data-lucide="x" class="w-3.5 h-3.5"></i>' +
+            '</button>' +
+          '</div>'
+        );
+
+        $('#member-list').append($newMember);
+        lucide.createIcons();
+
+        // 更新计数
+        var count = $('#member-list .member-item').length;
+        $('#member-count').text(count + ' 人');
+
+        console.log('已添加成员:', userName, '(' + userAccount + ')');
+      });
+
+      // ========== 搜索用户过滤 ==========
+      // 输入搜索关键词时：
+      // 1. 实时过滤用户候选列表
+      // 2. 匹配姓名或账号，不区分大小写
+      // 3. 无匹配结果时显示"未找到匹配用户"
+      $('#input-search-user').on('input', function() {
+        var keyword = $(this).val().toLowerCase();
+        var hasResult = false;
+
+        $('#user-search-results .user-candidate').each(function() {
+          var name = $(this).find('.text-sm.font-medium').text().toLowerCase();
+          var account = $(this).find('.text-xs').text().toLowerCase();
+
+          if (name.indexOf(keyword) > -1 || account.indexOf(keyword) > -1) {
+            $(this).show();
+            hasResult = true;
+          } else {
+            $(this).hide();
+          }
+        });
+
+        // 无结果提示
+        var $noResult = $('#user-search-results .no-result');
+        if (!hasResult) {
+          if ($noResult.length === 0) {
+            $('#user-search-results').append('<div class="no-result text-center py-4 text-sm text-on-surface-variant">未找到匹配用户</div>');
+          }
+        } else {
+          $noResult.remove();
+        }
+      });
+
+      // ========== 显示已授权过滤 ==========
+      $('#chk-show-all').on('change', function() {
+        var showAll = $(this).prop('checked');
+        console.log('显示已授权过滤:', showAll ? '显示全部' : '仅显示已授权');
+        // 原型阶段仅记录状态，后续可实现过滤逻辑：
+        // 1. 未勾选时，隐藏所有未授权的权限行（开关关闭的项）
+        // 2. 勾选时，显示全部权限行
+      });
+
+    });
+  </script>
+
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>
