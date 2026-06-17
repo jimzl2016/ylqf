@@ -8,15 +8,13 @@ appliedPatches = [ ]
 [dev]
 build = [ ]
 run = [
-  "sh",
-  "-c",
-  "exec python3 -m http.server ${DEPLOY_RUN_PORT} --bind 0.0.0.0 --directory ."
+  "python3",
+  "server.py"
 ]
 
 [deploy]
 build = [ ]
 run = [
-  "sh",
-  "-c",
-  "exec python3 -m http.server ${DEPLOY_RUN_PORT} --bind 0.0.0.0 --directory ."
+  "python3",
+  "server.py"
 ]
