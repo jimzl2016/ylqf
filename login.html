@@ -67,26 +67,26 @@
     <div class="bg-surface rounded-2xl shadow-card p-8 space-y-6">
       <div class="text-center">
         <h2 class="text-lg font-semibold text-on-surface">后台登录</h2>
-        <p class="text-xs text-on-surface-variant mt-1">请输入您的账号信息</p>
+        <p class="text-xs text-on-surface-variant mt-1">请输入验证码进入系统</p>
       </div>
 
-      <!-- 账号 -->
+      <!-- 账号（预填） -->
       <div class="space-y-1.5">
         <label class="text-sm font-medium text-on-surface" for="username">账号</label>
         <div class="relative">
           <i data-lucide="user" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-on-surface-variant/50"></i>
-          <input id="username" type="text" placeholder="请输入账号" autocomplete="username"
-            class="w-full h-11 pl-10 pr-4 rounded-lg bg-surface-container border border-outline-variant text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+          <input id="username" type="text" value="admin" readonly
+            class="w-full h-11 pl-10 pr-4 rounded-lg bg-surface-container border border-outline-variant text-sm text-on-surface cursor-default" />
         </div>
       </div>
 
-      <!-- 密码 -->
+      <!-- 密码（预填） -->
       <div class="space-y-1.5">
         <label class="text-sm font-medium text-on-surface" for="password">密码</label>
         <div class="relative">
           <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-on-surface-variant/50"></i>
-          <input id="password" type="password" placeholder="请输入密码" autocomplete="current-password"
-            class="w-full h-11 pl-10 pr-10 rounded-lg bg-surface-container border border-outline-variant text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
+          <input id="password" type="password" value="admin123" readonly
+            class="w-full h-11 pl-10 pr-10 rounded-lg bg-surface-container border border-outline-variant text-sm text-on-surface cursor-default" />
           <button id="btn-toggle-pwd" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface-variant transition-colors">
             <i data-lucide="eye-off" class="w-4.5 h-4.5"></i>
           </button>
@@ -99,22 +99,13 @@
         <div class="flex gap-3">
           <div class="relative flex-1">
             <i data-lucide="shield-alert" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-on-surface-variant/50"></i>
-            <input id="captcha" type="text" placeholder="请输入验证码" maxlength="4"
+            <input id="captcha" type="text" placeholder="请输入验证码" maxlength="4" autocomplete="off"
               class="w-full h-11 pl-10 pr-4 rounded-lg bg-surface-container border border-outline-variant text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all" />
           </div>
-          <div id="captcha-img" class="w-28 h-11 rounded-lg bg-surface-container-high flex items-center justify-center text-sm font-semibold text-on-surface-variant cursor-pointer select-none border border-outline-variant hover:border-primary/30 transition-colors">
+          <div id="captcha-img" class="w-28 h-11 rounded-lg bg-surface-container-high flex items-center justify-center text-lg font-bold text-on-surface-variant cursor-pointer select-none border border-outline-variant hover:border-primary/30 transition-colors tracking-widest">
             A3K9
           </div>
         </div>
-      </div>
-
-      <!-- 记住我 + 忘记密码 -->
-      <div class="flex items-center justify-between">
-        <label class="flex items-center gap-2 cursor-pointer select-none">
-          <input id="remember" type="checkbox" class="w-4 h-4 rounded border-outline text-primary focus:ring-primary/30 accent-primary" />
-          <span class="text-sm text-on-surface-variant">记住登录状态</span>
-        </label>
-        <a href="#" id="btn-forgot" class="text-sm text-primary hover:underline transition-colors">忘记密码？</a>
       </div>
 
       <!-- 登录按钮 -->
@@ -161,46 +152,23 @@
 
       // 登录提交
       $('#btn-login').on('click', function () {
-        var username = $('#username').val().trim();
-        var password = $('#password').val();
         var captcha = $('#captcha').val().trim();
 
-        if (!username) {
-          showToast('请输入账号', 'warning');
-          $('#username').focus();
-          return;
-        }
-        if (!password) {
-          showToast('请输入密码', 'warning');
-          $('#password').focus();
-          return;
-        }
         if (!captcha) {
           showToast('请输入验证码', 'warning');
           $('#captcha').focus();
           return;
         }
 
-        // 模拟登录加载
         var $btn = $(this);
         $btn.prop('disabled', true).html('<span class="inline-block w-4 h-4 border-2 border-on-primary/30 border-t-on-primary rounded-full animate-spin"></span><span>登录中...</span>');
 
         setTimeout(function () {
-          // 演示账号：admin / admin123
-          if (username === 'admin' && password === 'admin123') {
-            showToast('登录成功，正在跳转...', 'success');
-            setTimeout(function () {
-              window.location.href = 'home.html';
-            }, 800);
-          } else {
-            showToast('账号或密码错误', 'error');
-            $btn.prop('disabled', false).html('<span>登 录</span><i data-lucide="arrow-right" class="w-4 h-4"></i>');
-            lucide.createIcons();
-            // 刷新验证码
-            $('#captcha-img').trigger('click');
-            $('#captcha').val('').focus();
-          }
-        }, 1200);
+          showToast('登录成功，正在跳转...', 'success');
+          setTimeout(function () {
+            window.location.href = 'home.html';
+          }, 800);
+        }, 1000);
       });
 
       // 回车登录
@@ -208,12 +176,6 @@
         if (e.key === 'Enter') {
           $('#btn-login').trigger('click');
         }
-      });
-
-      // 忘记密码
-      $('#btn-forgot').on('click', function (e) {
-        e.preventDefault();
-        showToast('请联系系统管理员重置密码', 'info');
       });
 
       // Toast 提示
