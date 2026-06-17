@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 import os
-import http.server
-import socketserver
+import sys
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 PORT = int(os.environ.get('DEPLOY_RUN_PORT', 5000))
-DIRECTORY = os.environ.get('COZE_WORKSPACE_PATH', '.')
 
-class Handler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
+class Handler(SimpleHTTPRequestHandler):
+    pass
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Serving at port {PORT}")
-    httpd.serve_forever()
+print(f'Starting server on port {PORT}', flush=True)
+httpd = HTTPServer(('', PORT), Handler)
+httpd.serve_forever()
