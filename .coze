@@ -3,9 +3,9 @@ entrypoint = "index.html"
 requires = ["nodejs-24"]
 
 [dev]
-build = ["pnpm", "install"]
+build = []
 run = ["node", "server.js"]
 
 [deploy]
-build = ["bash", "-c", "pnpm install"]
+build = []
 run = ["node", "server.js"]
